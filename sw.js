@@ -3,7 +3,7 @@
 //  部署位置：與 index.html 同層（根目錄）
 // ============================================================
 
-const CACHE_NAME = 'tokyo-2026-v2';
+const CACHE_NAME = 'tokyo-2026-v3';
 
 const PRECACHE_URLS = [
   './',
