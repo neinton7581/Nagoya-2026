@@ -534,8 +534,8 @@
   .voucher-item-label {
     display: block;
     cursor: pointer;
-    background: #fff;
-    border: 1px solid rgba(101,152,181,0.2);
+    background: rgba(101,152,181,0.08);
+    border: 1px solid rgba(101,152,181,0.18);
     border-radius: 8px;
     padding: 0.7rem 1rem;
     font-size: 0.75rem;
@@ -547,19 +547,19 @@
     position: relative;
   }
   .voucher-item-label::after { content: ' ▾'; font-size: 0.65rem; opacity: 0.6; }
-  .voucher-item-label:hover { background: rgba(101,152,181,0.07); box-shadow: 0 2px 8px rgba(101,152,181,0.1); }
-  .voucher-item-input:checked + .voucher-item-label { background: rgba(101,152,181,0.1); border-radius: 8px 8px 0 0; }
+  .voucher-item-label:hover { background: rgba(101,152,181,0.14); box-shadow: 0 2px 8px rgba(101,152,181,0.1); }
+  .voucher-item-input:checked + .voucher-item-label { background: rgba(101,152,181,0.16); border-radius: 8px 8px 0 0; }
   .voucher-item-input:checked + .voucher-item-label::after { content: ' ▴'; }
   .voucher-item-body {
     display: none;
-    background: rgba(255,255,255,0.85);
-    border: 1px solid rgba(101,152,181,0.2);
+    background: rgba(101,152,181,0.04);
+    border: 1px solid rgba(101,152,181,0.18);
     border-top: none;
     border-radius: 0 0 8px 8px;
     padding: 0.8rem 1rem;
     font-size: 0.76rem;
     line-height: 1.85;
-    color: #444;
+    color: #4a6a82;
     flex: 0 0 100%;
   }
   .voucher-item-input:checked ~ .voucher-item-body { display: block; }
@@ -5934,26 +5934,6 @@ body {
           <div class="accom-addr">澀谷區神宮前 230-8（203室）</div>
         </div>
       </a>
-    </div>
-
-    <div class="si-section-title">交通方式</div>
-    <div class="transport-grid">
-      <div class="transport-card">
-        <h4>✈️ 機場接駁 — Skyliner</h4>
-        <p><strong>去程</strong>：成田 → Keisei-Ueno，約 50 分<br><strong>費用</strong>：¥2,730／人<br><strong>月台</strong>：B1（Keisei）搭乘<br>可使用 Suica / Pasmo 購票</p>
-      </div>
-      <div class="transport-card">
-        <h4>🚂 市區交通 — Suica</h4>
-        <p><strong>Suica</strong>：Apple Pay 綁定（Visa/Mastercard/JCB）<br>可搭乘 JR、地鐵、公車<br>便利商店、超市也可使用</p>
-      </div>
-      <div class="transport-card">
-        <h4>🚂 返程 — N'EX</h4>
-        <p><strong>N'EX 成田特快</strong>：Klook 已購票<br><strong>16:33</strong> 東京站出發，約 55 分<br>抵達成田第 1/2 航廈</p>
-      </div>
-      <div class="transport-card">
-        <h4>🚗 富士山租車 — Toyota</h4>
-        <p><strong>預約號</strong>：99923163300<br><strong>車型</strong>：C3，AT，Non-smoking<br><strong>期間</strong>：3/31 12:00 → 4/1 20:00<br>含 DPP（CDW + NOC）全保</p>
-      </div>
     </div>
 
     <!-- 預約憑證 -->
