@@ -2091,7 +2091,30 @@
     padding: 0.6rem 1rem calc(env(safe-area-inset-bottom, 0px) + 0.8rem);
   }
   /* 日期分組標題 */
-  .ledger-date-group { margin-bottom: 0.5rem; }
+  .ledger-date-group { margin-bottom: 0.6rem; }
+  .ledger-store-group { margin: 0.15rem 0; }
+  .ledger-store-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.45rem 1rem 0.45rem 1.5rem;
+    background: rgba(101,152,181,0.05);
+    cursor: pointer; border-bottom: 1px solid rgba(101,152,181,0.07);
+  }
+  .ledger-store-header:active { background: rgba(101,152,181,0.1); }
+  .ledger-store-name {
+    font-size: 0.78rem; font-weight: 600; color: #2a4a62;
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+  .ledger-store-subtotal {
+    font-size: 0.7rem; color: #6598b5; font-weight: 500; white-space: nowrap;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .ledger-store-arrow {
+    font-size: 0.6rem; color: rgba(101,152,181,0.5);
+    transition: transform 0.2s;
+  }
+  .ledger-store-group.collapsed .ledger-store-arrow { transform: rotate(-90deg); }
+  .ledger-store-items { overflow: hidden; }
+  .ledger-store-group.collapsed .ledger-store-items { display: none; }
   .ledger-date-header {
     display: flex;
     justify-content: space-between;
@@ -2634,6 +2657,36 @@ body {
 .api-key-save { font-size:0.7rem; padding:0.38rem 0.7rem; white-space:nowrap;
   background:rgba(101,152,181,0.12); border:1px solid rgba(101,152,181,0.22);
   border-radius:6px; color:#4a7a9b; cursor:pointer;
+}
+
+/* ══ Settings Modal ══ */
+.settings-body { padding:0.4rem 0; }
+.settings-section {
+  margin:0.5rem 0.9rem 0.9rem;
+  background:rgba(101,152,181,0.04);
+  border:1px solid rgba(101,152,181,0.13);
+  border-radius:12px;
+  overflow:hidden;
+}
+.settings-section-title {
+  font-size:0.72rem; font-weight:700; letter-spacing:0.04em;
+  color:#4a7a9b; padding:0.6rem 1rem 0.4rem;
+  border-bottom:1px solid rgba(101,152,181,0.1);
+  display:flex; align-items:center; gap:0.4rem;
+}
+.settings-row {
+  display:flex; align-items:center; gap:0.5rem;
+  padding:0.65rem 1rem;
+}
+.settings-label {
+  font-size:0.72rem; color:#1a2f45; white-space:nowrap; min-width:3.5rem;
+}
+.settings-unit {
+  font-size:0.68rem; color:rgba(101,152,181,0.6); white-space:nowrap;
+}
+.settings-hint {
+  font-size:0.65rem; color:rgba(101,152,181,0.5);
+  padding:0 1rem 0.65rem; line-height:1.5;
 }
 
 </style>
@@ -6857,6 +6910,7 @@ body {
     <button class="fab-item" onclick="openToolModal('giftsModal')"><i class="fa-solid fa-gift"></i>Gifts</button>
     <button class="fab-item" onclick="openToolModal('infoModal')"><i class="fa-solid fa-circle-info"></i>Info</button>
     <button class="fab-item" onclick="openToolModal('listsModal')"><i class="fa-solid fa-list-check"></i>Lists</button>
+    <button class="fab-item" onclick="openToolModal('settingsModal')"><i class="fa-solid fa-gear"></i>Settings</button>
   </div>
   <button class="fab-main" id="fabMain" onclick="toggleFab()">
     <span class="fab-fuji"><img loading="lazy" src="img/g37_94f2ec8f45.png" width="100" height="100" style="display:block;" alt="icon"></span>
@@ -6966,9 +7020,6 @@ body {
   <div class="tool-modal-card">
     <div class="tool-modal-header">
       <span class="tool-modal-title"><i class="fa-solid fa-wallet"></i>Wallet</span>
-      <button onclick="openToolModal('statsModal')" style="background:rgba(224,123,57,0.1);border:1px solid rgba(224,123,57,0.3);border-radius:8px;color:#c96928;font-size:0.72rem;padding:0.3rem 0.7rem;cursor:pointer;display:flex;align-items:center;gap:0.3rem;font-weight:600;">
-        <i class="fa-solid fa-chart-pie"></i> 統計
-      </button>
       <button class="tool-modal-close" onclick="closeToolModal('walletModal')"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="tool-modal-body" style="padding:0; display:flex; flex-direction:column; overflow:hidden;">
@@ -6976,13 +7027,6 @@ body {
 
       <!-- 上方：匯率 + 計算機 -->
       <div class="wallet-calc-pane">
-      <!-- 匯率設定 -->
-      <div class="wallet-rate-row">
-        <span class="wallet-rate-label">匯率</span>
-        <input class="wallet-rate-input" id="rateInput" type="number" inputmode="decimal" value="0.215" min="0.01" step="0.001" onchange="saveRate()">
-        <span class="wallet-rate-unit">TWD / ¥1 JPY</span>
-      </div>
-
       <!-- 計算機 -->
       <div class="calc-display">
         <div class="calc-expr" id="calcExpr">—</div>
@@ -7050,6 +7094,9 @@ body {
           </select>
         </div>
         <div class="wallet-field-row">
+          <input class="wallet-input" id="ledgerStore" placeholder="🏪 店名（選填）" type="text">
+        </div>
+        <div class="wallet-field-row">
           <input class="wallet-input" id="ledgerName" placeholder="品項名稱" type="text">
         </div>
         <div class="wallet-field-row">
@@ -7090,12 +7137,6 @@ body {
       </div><!-- /wallet-ledger-pane -->
       </div><!-- /wallet-split -->
     </div><!-- /tool-modal-body -->
-    <!-- Gemini API Key 設定 -->
-    <div class="api-key-row">
-      <span style="font-size:0.68rem;color:rgba(101,152,181,0.6);white-space:nowrap;">Gemini Key</span>
-      <input class="api-key-input" id="geminiKeyInput" type="password" placeholder="貼上 Gemini API Key">
-      <button class="api-key-save" onclick="saveGeminiKey()">儲存</button>
-    </div>
   </div><!-- /tool-modal-card -->
 </div><!-- /walletModal -->
 
@@ -7160,6 +7201,51 @@ body {
       確認儲存
     </button>
     <div class="receipt-save-note">儲存後將自動同步至雙機</div>
+  </div>
+</div>
+
+<!-- ══ SETTINGS MODAL ══ -->
+<div class="tool-modal" id="settingsModal" onclick="handleModalBgClick(event,'settingsModal')">
+  <div class="tool-modal-card">
+    <div class="tool-modal-header">
+      <span class="tool-modal-title"><i class="fa-solid fa-gear"></i>Settings</span>
+      <button class="tool-modal-close" onclick="closeToolModal('settingsModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="tool-modal-body settings-body">
+
+      <!-- 匯率設定 -->
+      <div class="settings-section">
+        <div class="settings-section-title"><i class="fa-solid fa-coins"></i> 匯率設定</div>
+        <div class="settings-row">
+          <span class="settings-label">日圓匯率</span>
+          <input class="wallet-rate-input" id="rateInput" type="number" inputmode="decimal" value="0.215" min="0.01" step="0.001" onchange="saveRate()">
+          <span class="settings-unit">TWD / ¥1 JPY</span>
+        </div>
+        <div class="settings-hint">計算機與記帳換算台幣時使用此匯率</div>
+      </div>
+
+      <!-- Gemini AI 設定 -->
+      <div class="settings-section">
+        <div class="settings-section-title"><i class="fa-solid fa-robot"></i> Gemini AI 設定</div>
+        <div class="settings-row">
+          <span class="settings-label">API Key</span>
+          <input class="api-key-input" id="geminiKeyInput" type="password" placeholder="貼上 Gemini API Key" style="flex:1; min-width:0;">
+          <button class="api-key-save" onclick="saveGeminiKey()">儲存</button>
+        </div>
+        <div class="settings-hint">用於掃描收據的 OCR 功能，Key 只儲存在本機裝置，不會上傳</div>
+      </div>
+
+      <!-- 消費統計 -->
+      <div class="settings-section">
+        <div class="settings-section-title"><i class="fa-solid fa-chart-pie"></i> 消費統計</div>
+        <div class="settings-row" style="padding-bottom:0.8rem;">
+          <button onclick="closeToolModal('settingsModal'); setTimeout(function(){openToolModal('statsModal');},180);" style="flex:1;background:rgba(224,123,57,0.1);border:1px solid rgba(224,123,57,0.3);border-radius:10px;color:#c96928;font-size:0.8rem;padding:0.55rem 1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.4rem;font-weight:600;">
+            <i class="fa-solid fa-chart-pie"></i> 查看消費統計圖表
+          </button>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -7228,8 +7314,9 @@ function openToolModal(id) {
   document.getElementById('fabMenu').classList.remove('open');
   document.getElementById('fabMain').classList.remove('open');
   if (id === 'listsModal') { renderMemoList(); renderClList(); }
-  if (id === 'walletModal') { renderLedger(); loadRate(); }
+  if (id === 'walletModal') { renderLedger(); }
   if (id === 'giftsModal') { renderGifts(); }
+  if (id === 'settingsModal') { loadRate(); loadGeminiKeyPlaceholder(); }
 }
 function closeToolModal(id) {
   document.getElementById(id).classList.remove('open');
@@ -7512,25 +7599,25 @@ function renderLedger() {
     return;
   }
 
-  // 按日期分組（依第一次出現順序）
-  var groups = {};
+  // ── 第一層：按日期分組 ──
+  var dateGroups = {};
   var dateOrder = [];
   data.forEach(function(item) {
     var d = item.date || '未分類';
-    if (!groups[d]) { groups[d] = []; dateOrder.push(d); }
-    groups[d].push(item);
+    if (!dateGroups[d]) { dateGroups[d] = []; dateOrder.push(d); }
+    dateGroups[d].push(item);
   });
   dateOrder = dateOrder.filter(function(v, i, a){ return a.indexOf(v) === i; });
 
   var html = '';
   dateOrder.forEach(function(date) {
-    var items = groups[date];
-    var dayJpy = items.reduce(function(s, i){ return s + i.jpy; }, 0);
+    var dateItems = dateGroups[date];
+    var dayJpy = dateItems.reduce(function(s, i){ return s + i.jpy; }, 0);
     var dayTwd = Math.round(dayJpy * rate);
+    var dgid = 'ldg-' + date.replace(/\//g,'-');
 
-    var gid = 'ldg-' + date.replace(/\//g,'-');
-    html += '<div class="ledger-date-group" id="' + gid + '">';
-    html += '<div class="ledger-date-header" onclick="toggleLedgerGroup(\'' + gid + '\')">'
+    html += '<div class="ledger-date-group" id="' + dgid + '">';
+    html += '<div class="ledger-date-header" onclick="toggleLedgerGroup(\'' + dgid + '\')">'
       + '<span class="ledger-date-label">' + escHtml(date) + '</span>'
       + '<span style="display:flex;align-items:center;gap:0.5rem;">'
       + '<span class="ledger-date-subtotal">¥' + dayJpy.toLocaleString() + ' ≈ NT$' + dayTwd.toLocaleString() + '</span>'
@@ -7539,25 +7626,60 @@ function renderLedger() {
       + '</div>';
     html += '<div class="ledger-date-items">';
 
-    items.forEach(function(item) {
-      var twd = Math.round(item.jpy * rate);
-      html += '<div class="ledger-item">'
-        + '<div>'
-          + '<div class="ledger-name">' + escHtml(item.name) + '</div>'
-          + '<div style="display:flex;gap:0.3rem;flex-wrap:wrap;">'
-          + (item.cat ? '<div class="ledger-cat">' + escHtml(item.cat) + '</div>' : '')
-          + (item.pay ? '<div class="ledger-cat" style="background:rgba(224,123,57,0.1);color:#c96928;">' + escHtml(item.pay) + '</div>' : '')
-          + '</div>'
-        + '</div>'
-        + '<div class="ledger-amounts"><div class="ledger-jpy">¥' + item.jpy.toLocaleString() + '</div><div class="ledger-twd">≈ NT$' + twd.toLocaleString() + '</div></div>';
-      if (item.thumb) {
-        html += '<img class="ledger-thumb" src="' + item.thumb + '" alt="" onclick="openLightbox(\'' + item.thumb.replace(/'/g,"\\'") + '\')">';
-      }
-      html += '<button class="ledger-del" onclick="delLedger(' + item.id + ')"><i class="fa-solid fa-xmark"></i></button>'
+    // ── 第二層：按店名分組（在同一日期內，依出現順序）──
+    var storeGroups = {};
+    var storeOrder = [];
+    dateItems.forEach(function(item) {
+      var s = (item.store && item.store.trim()) ? item.store.trim() : '其他';
+      if (!storeGroups[s]) { storeGroups[s] = []; storeOrder.push(s); }
+      storeGroups[s].push(item);
+    });
+    storeOrder = storeOrder.filter(function(v, i, a){ return a.indexOf(v) === i; });
+
+    storeOrder.forEach(function(store) {
+      var storeItems = storeGroups[store];
+      var storeJpy = storeItems.reduce(function(s, i){ return s + i.jpy; }, 0);
+      var storeTwd = Math.round(storeJpy * rate);
+      var sgid = dgid + '-s-' + store.replace(/[^a-zA-Z0-9]/g,'_');
+
+      html += '<div class="ledger-store-group" id="' + sgid + '">';
+      html += '<div class="ledger-store-header" onclick="toggleLedgerGroup(\'' + sgid + '\')">'
+        + '<span class="ledger-store-name"><i class="fa-solid fa-store" style="font-size:0.65rem;opacity:0.6;"></i>' + escHtml(store) + '</span>'
+        + '<span class="ledger-store-subtotal">'
+        + '¥' + storeJpy.toLocaleString() + ' ≈ NT$' + storeTwd.toLocaleString()
+        + '<i class="fa-solid fa-chevron-down ledger-store-arrow"></i>'
+        + '</span>'
         + '</div>';
+      html += '<div class="ledger-store-items">';
+
+      storeItems.forEach(function(item) {
+        var twd = Math.round(item.jpy * rate);
+        var jpyStr = item.jpy < 0
+          ? '<span style="color:#e07070;">−¥' + Math.abs(item.jpy).toLocaleString() + '</span>'
+          : '¥' + item.jpy.toLocaleString();
+        var twdStr = item.jpy < 0
+          ? '<span style="color:#e07070;">−NT$' + Math.abs(twd).toLocaleString() + '</span>'
+          : '≈ NT$' + twd.toLocaleString();
+        html += '<div class="ledger-item">'
+          + '<div>'
+            + '<div class="ledger-name">' + escHtml(item.name) + '</div>'
+            + '<div style="display:flex;gap:0.3rem;flex-wrap:wrap;">'
+            + (item.cat ? '<div class="ledger-cat">' + escHtml(item.cat) + '</div>' : '')
+            + (item.pay ? '<div class="ledger-cat" style="background:rgba(224,123,57,0.1);color:#c96928;">' + escHtml(item.pay) + '</div>' : '')
+            + '</div>'
+          + '</div>'
+          + '<div class="ledger-amounts"><div class="ledger-jpy">' + jpyStr + '</div><div class="ledger-twd">' + twdStr + '</div></div>';
+        if (item.thumb) {
+          html += '<img class="ledger-thumb" src="' + item.thumb + '" alt="" onclick="openLightbox(\'' + item.thumb.replace(/'/g,"\\'") + '\')">';
+        }
+        html += '<button class="ledger-del" onclick="delLedger(' + item.id + ')"><i class="fa-solid fa-xmark"></i></button>'
+          + '</div>';
+      });
+
+      html += '</div></div>'; // /store-items /store-group
     });
 
-    html += '</div></div>';
+    html += '</div></div>'; // /date-items /date-group
   });
   document.getElementById('ledgerList').innerHTML = html;
 }
@@ -8022,12 +8144,18 @@ function saveGeminiKey() {
   if (!val) return;
   localStorage.setItem('gemini_api_key', val);
   document.getElementById('geminiKeyInput').value = '';
+  document.getElementById('geminiKeyInput').placeholder = 'Key 已設定 ✓';
   alert('Gemini API Key 已儲存！');
 }
-(function(){
+function loadGeminiKeyPlaceholder() {
   var k = localStorage.getItem('gemini_api_key');
-  if (k) { var el = document.getElementById('geminiKeyInput'); if(el) el.placeholder = 'Key 已設定 ✓'; }
-})();
+  var el = document.getElementById('geminiKeyInput');
+  if (el) el.placeholder = k ? 'Key 已設定 ✓' : '貼上 Gemini API Key';
+}
+// 頁面載入時初始化匯率（Settings modal 可能尚未開啟）
+document.addEventListener('DOMContentLoaded', function() {
+  loadRate();
+});
 
 // ══════════════════════════════════════
 //  更新 saveLedger — 加入支付方式
@@ -8036,17 +8164,19 @@ var _origSaveLedger = null;
 document.addEventListener('DOMContentLoaded', function() {
   _origSaveLedger = window.saveLedger;
   window.saveLedger = function() {
-    var name = document.getElementById('ledgerName').value.trim();
-    var amt  = parseFloat(document.getElementById('ledgerAmt').value);
-    var date = document.getElementById('ledgerDate').value;
-    var cat  = document.getElementById('ledgerCat').value;
-    var pay  = document.getElementById('ledgerPayMethod') ? document.getElementById('ledgerPayMethod').value : '現金';
-    if (!name || isNaN(amt) || amt <= 0) { alert('請填寫品項與金額'); return; }
+    var name  = document.getElementById('ledgerName').value.trim();
+    var store = (document.getElementById('ledgerStore') ? document.getElementById('ledgerStore').value.trim() : '') || '';
+    var amt   = parseFloat(document.getElementById('ledgerAmt').value);
+    var date  = document.getElementById('ledgerDate').value;
+    var cat   = document.getElementById('ledgerCat').value;
+    var pay   = document.getElementById('ledgerPayMethod') ? document.getElementById('ledgerPayMethod').value : '現金';
+    if (!name || isNaN(amt) || amt === 0) { alert('請填寫品項與金額'); return; }
     var data = getLedger();
-    data.unshift({ name:name, jpy:Math.round(amt), date:date, cat:cat, pay:pay, thumb:window._pendingThumb||null, id:Date.now() });
+    data.unshift({ name:name, store:store, jpy:Math.round(amt), date:date, cat:cat, pay:pay, thumb:window._pendingThumb||null, id:Date.now() });
     saveLedgerData(data);
     document.getElementById('ledgerName').value = '';
     document.getElementById('ledgerAmt').value = '';
+    if (document.getElementById('ledgerStore')) document.getElementById('ledgerStore').value = '';
     document.getElementById('thumbPreview').style.display = 'none';
     document.getElementById('photoInput').value = '';
     window._pendingThumb = null;
@@ -8058,13 +8188,14 @@ document.addEventListener('DOMContentLoaded', function() {
 //  收據掃描 — Gemini Vision
 // ══════════════════════════════════════
 var _receiptItems = [];
+var _receiptStoreName = '';
 
 function handleReceiptScan(event) {
   var file = event.target.files[0];
   if (!file) return;
   event.target.value = '';
   var apiKey = localStorage.getItem('gemini_api_key');
-  if (!apiKey) { alert('請先在 Wallet 底部設定 Gemini API Key'); return; }
+  if (!apiKey) { alert('請先在 Settings 設定 Gemini API Key'); return; }
 
   // 顯示 loading
   var overlay = document.getElementById('receiptOverlay');
@@ -8143,6 +8274,7 @@ function callGeminiOCR(apiKey, base64, mime, blobUrl) {
 }
 
 function renderReceiptConfirm(storeName, dataUrl) {
+  _receiptStoreName = (storeName && storeName !== 'unknown') ? storeName : '';
   var html = '';
   // 收據縮圖 + 店名
   html += '<div class="receipt-store-card">';
@@ -8195,24 +8327,31 @@ function addReceiptItem() {
 }
 
 function confirmReceiptSave() {
-  var date = document.getElementById('receiptDate').value;
-  var cat  = document.getElementById('receiptCat').value;
-  var pay  = document.getElementById('receiptPayMethod').value;
-  var data = getLedger();
+  var date  = document.getElementById('receiptDate').value;
+  var cat   = document.getElementById('receiptCat').value;
+  var pay   = document.getElementById('receiptPayMethod').value;
+  var store = _receiptStoreName || '';
+  var data  = getLedger();
+  // 允許負數（折扣），只排除金額為 0 且品名空白的
+  var saved = 0;
   _receiptItems.forEach(function(item) {
-    if (item.name && item.amount > 0) {
-      data.unshift({ name:item.name, jpy:Math.round(item.amount), date:date, cat:cat, pay:pay, thumb:null, id:Date.now() + Math.random() });
+    if (item.name && item.amount !== 0 && !isNaN(item.amount)) {
+      data.unshift({ name:item.name, store:store, jpy:Math.round(item.amount), date:date, cat:cat, pay:pay, thumb:null, id:Date.now() + Math.random() });
+      saved++;
     }
   });
   saveLedgerData(data);
   renderLedger();
+  // 先記錄數量再清空，避免 closeReceiptOverlay 清空 _receiptItems 後 count 變 0
+  var msg = '已新增 ' + saved + ' 筆記帳！';
   closeReceiptOverlay();
-  alert('已新增 ' + _receiptItems.filter(function(i){return i.amount>0;}).length + ' 筆記帳！');
+  alert(msg);
 }
 
 function closeReceiptOverlay() {
   document.getElementById('receiptOverlay').classList.remove('open');
   _receiptItems = [];
+  _receiptStoreName = '';
 }
 
 // ══════════════════════════════════════
