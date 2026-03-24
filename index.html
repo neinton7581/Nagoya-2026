@@ -2659,6 +2659,20 @@ body {
   border-radius:6px; color:#4a7a9b; cursor:pointer;
 }
 
+/* ══ Firebase Auth UI ══ */
+.fb-auth-row { display:flex; align-items:center; gap:0.5rem; padding:0.1rem 0 0.55rem; }
+.fb-auth-email { font-size:0.75rem; color:#2a4a62; font-weight:600; flex:1; word-break:break-all; }
+.fb-sync-badge { font-size:0.62rem; background:rgba(80,180,120,0.15); color:#2d8a5a; border-radius:6px; padding:0.18rem 0.55rem; white-space:nowrap; }
+.fb-login-form { display:flex; flex-direction:column; gap:0.45rem; }
+.fb-login-input { font-size:0.8rem; padding:0.48rem 0.7rem; border:1px solid rgba(101,152,181,0.22); border-radius:8px; color:#4a7a9b; background:#fff; outline:none; width:100%; box-sizing:border-box; }
+.fb-login-input::placeholder { color:rgba(101,152,181,0.38); }
+.fb-login-input:focus { border-color:#6598b5; }
+.fb-login-btn { font-size:0.78rem; padding:0.5rem; background:rgba(101,152,181,0.12); border:1px solid rgba(101,152,181,0.3); border-radius:8px; color:#4a7a9b; cursor:pointer; font-weight:600; }
+.fb-login-btn:disabled { opacity:0.5; cursor:not-allowed; }
+.fb-logout-btn { width:100%; font-size:0.72rem; padding:0.42rem; background:rgba(224,112,112,0.07); border:1px solid rgba(224,112,112,0.2); border-radius:8px; color:#c05050; cursor:pointer; }
+.fb-login-error { font-size:0.68rem; color:#c05050; display:none; padding:0.1rem 0; }
+.fb-offline-note { font-size:0.65rem; color:rgba(101,152,181,0.5); padding:0 0 0.5rem; line-height:1.5; }
+
 /* ══ Settings Modal ══ */
 .settings-body { padding:0.4rem 0; }
 .settings-section {
@@ -7213,6 +7227,14 @@ body {
     </div>
     <div class="tool-modal-body settings-body">
 
+      <!-- 雙機同步登入 -->
+      <div class="settings-section">
+        <div class="settings-section-title"><i class="fa-solid fa-cloud-arrow-up"></i> 雙機同步帳號</div>
+        <div id="fbAuthStatus" style="padding:0.5rem 1rem 0.8rem;">
+          <div class="settings-hint" style="padding:0;">載入中…</div>
+        </div>
+      </div>
+
       <!-- 匯率設定 -->
       <div class="settings-section">
         <div class="settings-section-title"><i class="fa-solid fa-coins"></i> 匯率設定</div>
@@ -7316,7 +7338,7 @@ function openToolModal(id) {
   if (id === 'listsModal') { renderMemoList(); renderClList(); }
   if (id === 'walletModal') { renderLedger(); }
   if (id === 'giftsModal') { renderGifts(); }
-  if (id === 'settingsModal') { loadRate(); loadGeminiKeyPlaceholder(); }
+  if (id === 'settingsModal') { loadRate(); loadGeminiKeyPlaceholder(); renderFbAuthStatus(); }
 }
 function closeToolModal(id) {
   document.getElementById(id).classList.remove('open');
@@ -8139,6 +8161,53 @@ document.addEventListener('keydown', function (e) {
 // ══════════════════════════════════════
 //  Gemini API Key
 // ══════════════════════════════════════
+// ══════════════════════════════════════
+//  Firebase Auth UI
+// ══════════════════════════════════════
+function renderFbAuthStatus() {
+  var el = document.getElementById('fbAuthStatus');
+  if (!el) return;
+  var isAuth = typeof window.fbGetAuthStatus === 'function' && window.fbGetAuthStatus();
+  var email  = typeof window.fbGetUserEmail  === 'function' ? window.fbGetUserEmail()  : null;
+
+  if (isAuth && email) {
+    el.innerHTML =
+      '<div class="fb-auth-row">'
+      + '<i class="fa-solid fa-circle-check" style="color:#2d8a5a;font-size:0.9rem;flex-shrink:0;"></i>'
+      + '<span class="fb-auth-email">' + escHtml(email) + '</span>'
+      + '<span class="fb-sync-badge">同步中</span>'
+      + '</div>'
+      + '<button class="fb-logout-btn" onclick="fbLogout()"><i class="fa-solid fa-right-from-bracket" style="margin-right:0.3rem;"></i>登出（停止雙機同步）</button>';
+  } else {
+    el.innerHTML =
+      '<div class="fb-offline-note">登入後才會與太太的手機雙向同步，未登入資料只存本機</div>'
+      + '<div class="fb-login-form">'
+      + '<input id="fbEmailInput" type="email" placeholder="帳號 Email" class="fb-login-input" autocomplete="username">'
+      + '<input id="fbPwInput" type="password" placeholder="密碼" class="fb-login-input" autocomplete="current-password"'
+      + ' onkeydown="if(event.key===\'Enter\')fbLoginFromUI()">'
+      + '<div id="fbLoginError" class="fb-login-error"></div>'
+      + '<button id="fbLoginBtn" class="fb-login-btn" onclick="fbLoginFromUI()">'
+      + '<i class="fa-solid fa-cloud-arrow-up" style="margin-right:0.3rem;"></i>登入並開啟同步'
+      + '</button>'
+      + '</div>';
+  }
+}
+
+function fbLoginFromUI() {
+  var email = (document.getElementById('fbEmailInput') || {}).value || '';
+  var pw    = (document.getElementById('fbPwInput')    || {}).value || '';
+  if (!email || !pw) {
+    var e = document.getElementById('fbLoginError');
+    if (e) { e.textContent = '請填寫 Email 與密碼'; e.style.display = 'block'; }
+    return;
+  }
+  var btn = document.getElementById('fbLoginBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '登入中…'; }
+  if (typeof window.fbLogin === 'function') {
+    window.fbLogin(email, pw);
+  }
+}
+
 function saveGeminiKey() {
   var val = document.getElementById('geminiKeyInput').value.trim();
   if (!val) return;
@@ -8481,11 +8550,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- ══ Firebase SDK ══ -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
 // ══════════════════════════════════════
-//  FIREBASE 雙機即時同步
+//  FIREBASE 雙機即時同步（含 Auth 保護）
 // ══════════════════════════════════════
 (function() {
   var firebaseConfig = {
@@ -8498,14 +8568,19 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   firebase.initializeApp(firebaseConfig);
-  var db = firebase.firestore();
+  var db   = firebase.firestore();
+  var auth = firebase.auth();
   var SYNC = db.collection('sync');
 
-  // ── In-memory cache（onSnapshot 更新後存在這裡）──
+  // ── 狀態 ──
   var _cache = { cl: null, memo: null, ledger: null, gifts: null, rate: null };
-  var _fbReady = false; // Firebase 第一次回應後設為 true
+  var _isAuthorized   = false; // 只有登入的帳號才為 true
+  var _listenersStarted = false;
 
-  // ── Override getter 函數：有 Firebase 資料就用，否則 fallback localStorage ──
+  // ── 只有登入時才同步到 Firebase ──
+  function _canSync() { return _isAuthorized; }
+
+  // ── Override getter：有 cache 就用，否則 fallback localStorage ──
   window.getClData = function() {
     return _cache.cl !== null ? _cache.cl
       : (function(){ try { return JSON.parse(localStorage.getItem('tokyo_cl') || 'null'); } catch(e) { return null; } })();
@@ -8523,37 +8598,37 @@ document.addEventListener('DOMContentLoaded', function() {
       : (function(){ try { return JSON.parse(localStorage.getItem('tokyo_gifts') || '[]'); } catch(e) { return []; } })();
   };
 
-  // ── Override saver 函數：同時寫 Firebase + localStorage（離線備援）──
+  // ── Override saver：永遠存 localStorage，只有登入時才寫 Firebase ──
   window.saveClData = function(data) {
     _cache.cl = data;
     localStorage.setItem('tokyo_cl', JSON.stringify(data));
-    SYNC.doc('cl').set({ items: data }).catch(function() {});
+    if (_canSync()) SYNC.doc('cl').set({ items: data }).catch(function() {});
   };
   window.saveMemoData = function(data) {
     _cache.memo = data;
     localStorage.setItem('tokyo_memo', JSON.stringify(data));
-    SYNC.doc('memo').set({ items: data }).catch(function() {});
+    if (_canSync()) SYNC.doc('memo').set({ items: data }).catch(function() {});
   };
   window.saveLedgerData = function(data) {
     _cache.ledger = data;
     localStorage.setItem('tokyo_ledger', JSON.stringify(data));
-    SYNC.doc('ledger').set({ items: data }).catch(function() {});
+    if (_canSync()) SYNC.doc('ledger').set({ items: data }).catch(function() {});
   };
   window.saveGifts = function(data) {
     _cache.gifts = data;
     localStorage.setItem('tokyo_gifts', JSON.stringify(data));
-    SYNC.doc('gifts').set({ items: data }).catch(function() {});
+    if (_canSync()) SYNC.doc('gifts').set({ items: data }).catch(function() {});
   };
   window.saveRate = function() {
     var val = document.getElementById('rateInput').value;
     _cache.rate = val;
     localStorage.setItem('tokyo_rate', val);
-    SYNC.doc('settings').set({ rate: val }).catch(function() {});
+    if (_canSync()) SYNC.doc('settings').set({ rate: val }).catch(function() {});
     updateCalcTwd();
     renderLedger();
   };
 
-  // ── 首次遷移：localStorage → Firebase（只在 Firebase 沒有資料時執行）──
+  // ── 首次遷移：localStorage → Firebase（只在登入後 Firebase 無資料時執行）──
   function _migrateKey(docKey, lsKey, dflt) {
     SYNC.doc(docKey).get().then(function(snap) {
       if (!snap.exists) {
@@ -8563,8 +8638,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }).catch(function() {});
   }
 
-  // ── 即時監聽：對方手機更新後，這台立刻 re-render ──
+  // ── 即時監聽（只在登入後啟動一次）──
   function _startListeners() {
+    if (_listenersStarted) return;
+    _listenersStarted = true;
+
     SYNC.doc('cl').onSnapshot(function(snap) {
       if (snap.exists && Array.isArray(snap.data().items)) {
         _cache.cl = snap.data().items;
@@ -8602,7 +8680,6 @@ document.addEventListener('DOMContentLoaded', function() {
         _cache.rate = snap.data().rate;
         localStorage.setItem('tokyo_rate', _cache.rate);
         var rateInput = document.getElementById('rateInput');
-        // 避免在使用者正在輸入時被覆蓋
         if (rateInput && document.activeElement !== rateInput) {
           rateInput.value = _cache.rate;
           if (typeof updateCalcTwd === 'function') updateCalcTwd();
@@ -8612,23 +8689,56 @@ document.addEventListener('DOMContentLoaded', function() {
     }, function() {});
   }
 
-  // ── 啟動 ──
-  document.addEventListener('DOMContentLoaded', function() {
-    _migrateKey('cl', 'tokyo_cl', []);
-    _migrateKey('memo', 'tokyo_memo', []);
-    _migrateKey('ledger', 'tokyo_ledger', []);
-    _migrateKey('gifts', 'tokyo_gifts', []);
-    // 遷移匯率
-    SYNC.doc('settings').get().then(function(snap) {
-      if (!snap.exists) {
-        var r = localStorage.getItem('tokyo_rate') || '0.215';
-        SYNC.doc('settings').set({ rate: r });
-      }
-    }).catch(function() {});
-
-    _startListeners();
-    _fbReady = true;
+  // ── Auth 狀態監聽（自動恢復登入 session）──
+  auth.onAuthStateChanged(function(user) {
+    _isAuthorized = !!user;
+    if (user && !_listenersStarted) {
+      // 登入後才執行遷移與開始即時同步
+      _migrateKey('cl',     'tokyo_cl',     []);
+      _migrateKey('memo',   'tokyo_memo',   []);
+      _migrateKey('ledger', 'tokyo_ledger', []);
+      _migrateKey('gifts',  'tokyo_gifts',  []);
+      SYNC.doc('settings').get().then(function(snap) {
+        if (!snap.exists) {
+          var r = localStorage.getItem('tokyo_rate') || '0.215';
+          SYNC.doc('settings').set({ rate: r });
+        }
+      }).catch(function() {});
+      _startListeners();
+    }
+    // 更新 Settings UI（若已開啟）
+    if (typeof renderFbAuthStatus === 'function') renderFbAuthStatus();
   });
+
+  // ── 對外暴露 Auth 操作函數 ──
+  window.fbGetAuthStatus = function() { return _isAuthorized; };
+  window.fbGetUserEmail  = function() { return auth.currentUser ? auth.currentUser.email : null; };
+
+  window.fbLogin = function(email, password) {
+    auth.signInWithEmailAndPassword(email, password)
+      .catch(function(err) {
+        // 恢復按鈕
+        var btn = document.getElementById('fbLoginBtn');
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="margin-right:0.3rem;"></i>登入並開啟同步'; }
+        // 顯示錯誤
+        var msg = '登入失敗：';
+        if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') msg += '帳號或密碼錯誤';
+        else if (err.code === 'auth/user-not-found')  msg += '帳號不存在';
+        else if (err.code === 'auth/invalid-email')   msg += 'Email 格式錯誤';
+        else if (err.code === 'auth/too-many-requests') msg += '嘗試次數過多，請稍後再試';
+        else msg += err.message;
+        var errEl = document.getElementById('fbLoginError');
+        if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
+      });
+    // onAuthStateChanged 成功時會自動呼叫 renderFbAuthStatus
+  };
+
+  window.fbLogout = function() {
+    auth.signOut().then(function() {
+      _isAuthorized = false;
+      if (typeof renderFbAuthStatus === 'function') renderFbAuthStatus();
+    });
+  };
 })();
 </script>
 
