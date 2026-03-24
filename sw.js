@@ -3,12 +3,14 @@
 //  部署位置：與 index.html 同層（根目錄）
 // ============================================================
 
-const CACHE_NAME = 'tokyo-2026-v4';
+const CACHE_NAME = 'tokyo-2026-v5';
 
 const PRECACHE_URLS = [
   './',
   './index.html',
   './index22.html',
+  // ── pdf/ ──
+  './pdf/holidaypackage.pdf',
   // ── img/ ──
   './img/3_28_0900.png',
   './img/4_6_1720_1.png',

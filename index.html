@@ -2500,6 +2500,138 @@ body {
   padding-top: env(safe-area-inset-top);
 }
 
+/* ══ 掃描收據按鈕 ══ */
+.wallet-scan-btn {
+  flex:1; padding:0.55rem 0.8rem;
+  background:linear-gradient(135deg,rgba(224,123,57,0.12),rgba(224,123,57,0.07));
+  border:1px dashed rgba(224,123,57,0.45); border-radius:8px;
+  color:#c96928; font-size:0.75rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:0.4rem; font-weight:600;
+}
+.wallet-scan-btn:active { background:rgba(224,123,57,0.22); }
+
+/* ══ 收據確認全螢幕 ══ */
+.receipt-overlay {
+  display:none; position:fixed; top:0;left:0;right:0;bottom:0;
+  background:#f8f9fa; z-index:9999; flex-direction:column; overflow:hidden;
+}
+.receipt-overlay.open { display:flex; }
+.receipt-hd {
+  padding:calc(env(safe-area-inset-top) + 0.8rem) 1rem 0.7rem;
+  background:#fff; border-bottom:1px solid rgba(101,152,181,0.15);
+}
+.receipt-back-btn {
+  color:#4a7a9b; font-size:0.85rem; background:none; border:none;
+  cursor:pointer; padding:0; margin-bottom:0.3rem; display:flex; align-items:center; gap:0.3rem;
+}
+.receipt-hd-title { font-size:1.15rem; font-weight:700; color:#1a2f45; }
+.receipt-hd-sub { font-size:0.72rem; color:rgba(101,152,181,0.7); margin-top:0.1rem; }
+.receipt-body { flex:1; overflow-y:auto; padding:0.9rem 1rem; }
+.receipt-store-card {
+  background:#fff; border:1px solid rgba(101,152,181,0.15);
+  border-radius:10px; padding:0.8rem 1rem; margin-bottom:0.8rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.receipt-store-name { font-size:0.95rem; font-weight:600; color:#1a2f45; }
+.receipt-store-date { font-size:0.78rem; color:rgba(101,152,181,0.7); }
+.receipt-items-wrap {
+  background:#fff; border:1px solid rgba(101,152,181,0.15); border-radius:10px; overflow:hidden;
+}
+.receipt-items-hd {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:0.65rem 1rem; border-bottom:1px solid rgba(101,152,181,0.1);
+}
+.receipt-items-label { font-size:0.85rem; font-weight:600; color:#1a2f45; }
+.receipt-add-btn { font-size:0.78rem; color:#e07b39; background:none; border:none; cursor:pointer; font-weight:600; }
+.receipt-row {
+  display:flex; align-items:center; padding:0.6rem 1rem;
+  border-bottom:1px solid rgba(101,152,181,0.07); gap:0.5rem;
+}
+.receipt-row:last-child { border-bottom:none; }
+.receipt-row-num {
+  width:1.35rem; height:1.35rem; background:rgba(101,152,181,0.1); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.68rem; color:#4a7a9b; flex-shrink:0;
+}
+.receipt-row-name {
+  flex:1; font-size:0.84rem; color:#1a2f45; border:none; outline:none;
+  background:transparent; min-width:0;
+}
+.receipt-row-amt {
+  font-size:0.84rem; color:#4a7a9b; font-weight:600; border:none; outline:none;
+  background:transparent; width:4.5rem; text-align:right;
+}
+.receipt-row-del {
+  background:none; border:none; cursor:pointer; color:rgba(200,80,80,0.45); font-size:0.82rem; padding:0.2rem;
+}
+.receipt-options-row {
+  display:flex; gap:0.5rem; margin-top:0.8rem;
+}
+.receipt-footer {
+  padding:0.8rem 1rem calc(env(safe-area-inset-bottom) + 0.8rem);
+  background:#fff; border-top:1px solid rgba(101,152,181,0.12);
+}
+.receipt-save-btn {
+  width:100%; padding:0.95rem; background:#e07b39; color:#fff;
+  border:none; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer;
+}
+.receipt-save-btn:active { background:#c96928; }
+.receipt-save-note { text-align:center; font-size:0.7rem; color:rgba(101,152,181,0.5); margin-top:0.4rem; }
+.receipt-loading {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:3rem 1rem; gap:0.8rem;
+}
+.receipt-spinner {
+  width:2.4rem; height:2.4rem; border:3px solid rgba(224,123,57,0.2);
+  border-top-color:#e07b39; border-radius:50%; animation:rc-spin 0.7s linear infinite;
+}
+@keyframes rc-spin { to { transform:rotate(360deg); } }
+.receipt-loading-txt { font-size:0.9rem; font-weight:600; color:#4a7a9b; }
+.receipt-loading-sub { font-size:0.73rem; color:rgba(101,152,181,0.6); }
+
+/* ══ 統計 Modal ══ */
+.stats-body { padding:0.9rem; overflow-y:auto; }
+.stats-card {
+  background:#fff; border:1px solid rgba(101,152,181,0.15);
+  border-radius:12px; padding:1rem; margin-bottom:0.85rem;
+}
+.stats-card-title { font-size:0.88rem; font-weight:700; color:#1a2f45; margin-bottom:0.75rem; }
+.stats-total-num { font-size:1.9rem; font-weight:800; color:#1a2f45; }
+.stats-total-sub { font-size:0.75rem; color:rgba(101,152,181,0.65); margin-top:0.2rem; }
+.stats-chart-row { display:flex; align-items:center; gap:0.9rem; }
+.stats-legend { flex:1; }
+.stats-legend-item {
+  display:flex; align-items:center; gap:0.4rem;
+  margin-bottom:0.3rem; font-size:0.75rem; color:#1a2f45;
+}
+.stats-dot { width:0.55rem; height:0.55rem; border-radius:50%; flex-shrink:0; }
+.stats-legend-pct { color:rgba(101,152,181,0.55); font-size:0.7rem; }
+.stats-legend-amt { margin-left:auto; font-weight:600; font-size:0.72rem; color:#4a7a9b; }
+.stats-top-row {
+  display:flex; align-items:center; padding:0.45rem 0;
+  border-bottom:1px solid rgba(101,152,181,0.08); font-size:0.8rem;
+}
+.stats-top-row:last-child { border-bottom:none; }
+.stats-top-rank { color:rgba(101,152,181,0.45); font-size:0.7rem; width:1.2rem; flex-shrink:0; }
+.stats-top-name { flex:1; color:#1a2f45; padding:0 0.4rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.stats-top-amt { font-weight:600; color:#4a7a9b; flex-shrink:0; }
+
+/* ══ API Key 設定 ══ */
+.api-key-row {
+  padding:0.55rem 1rem; background:rgba(101,152,181,0.04);
+  border-top:1px solid rgba(101,152,181,0.1);
+  display:flex; align-items:center; gap:0.5rem;
+}
+.api-key-input {
+  flex:1; font-size:0.7rem; padding:0.38rem 0.6rem;
+  border:1px solid rgba(101,152,181,0.22); border-radius:6px;
+  color:#4a7a9b; background:#fff; outline:none;
+}
+.api-key-save { font-size:0.7rem; padding:0.38rem 0.7rem; white-space:nowrap;
+  background:rgba(101,152,181,0.12); border:1px solid rgba(101,152,181,0.22);
+  border-radius:6px; color:#4a7a9b; cursor:pointer;
+}
+
 </style>
 </head>
 
@@ -5914,28 +6046,32 @@ body {
         <div class="accom-card">
           <div class="accom-dates">03.27 – 03.31 · 4 晚</div>
           <div class="accom-name">Airbnb 上野御徒町<span class="accom-map-pin"></span></div>
-          <div class="accom-addr">Check-in 16:00，Check-out 11:00</div>
+          <div class="accom-addr">Check-in 16:00<br>
+            Check-out 11:00</div>
         </div>
       </a>
       <a class="accom-map-link" href="https://maps.app.goo.gl/R1mW4KPmV3w73XKF8" target="_blank" rel="noopener">
         <div class="accom-card">
           <div class="accom-dates">03.31 – 04.01 · 1 晚</div>
           <div class="accom-name">秀峰閣湖月<span class="accom-map-pin"></span></div>
-          <div class="accom-addr">Check-in 15:00，Check-out 10:00</div>
+          <div class="accom-addr">Check-in 15:00<br>
+            Check-out 10:00</div>
         </div>
       </a>
       <a class="accom-map-link" href="https://maps.app.goo.gl/xbEhArCBtHjmpBWN7" target="_blank" rel="noopener">
         <div class="accom-card">
           <div class="accom-dates">04.01 – 04.03 · 2 晚</div>
           <div class="accom-name">Toy Story Hotel<span class="accom-map-pin"></span></div>
-          <div class="accom-addr">Check-in 15:00，Check-out 12:00</div>
+          <div class="accom-addr">Check-in 15:00<br>
+            Check-out 12:00</div>
         </div>
       </a>
       <a class="accom-map-link" href="https://maps.app.goo.gl/wQf8vCKxs9rHzmep7" target="_blank" rel="noopener">
         <div class="accom-card">
           <div class="accom-dates">04.03 – 04.08 · 5 晚</div>
           <div class="accom-name">Airbnb 澀谷表參道<span class="accom-map-pin"></span></div>
-          <div class="accom-addr">Check-in 15:00，Check-out 11:00</div>
+          <div class="accom-addr">Check-in 15:00<br>
+            Check-out 11:00</div>
         </div>
       </a>
     </div>
@@ -6914,10 +7050,23 @@ body {
           <img id="thumbPreview" class="wallet-thumb-preview" alt="預覽" onclick="openLightbox(this.src)">
         </div>
         <div class="wallet-field-row">
+          <select class="wallet-select" id="ledgerPayMethod">
+            <option value="現金">💴 現金</option>
+            <option value="信用卡">💳 信用卡</option>
+            <option value="PayPay">📱 PayPay</option>
+            <option value="Suica">🚇 Suica</option>
+            <option value="其他">💫 其他</option>
+          </select>
+        </div>
+        <div class="wallet-field-row">
           <button class="wallet-photo-btn" onclick="document.getElementById('photoInput').click()">
-            <i class="fa-solid fa-camera"></i> 拍照 / 上傳收據
+            <i class="fa-solid fa-camera"></i> 附圖
+          </button>
+          <button class="wallet-scan-btn" onclick="document.getElementById('scanInput').click()">
+            <i class="fa-solid fa-receipt"></i> 掃描收據
           </button>
           <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(event)">
+          <input type="file" id="scanInput" accept="image/*" capture="environment" style="display:none" onchange="handleReceiptScan(event)">
         </div>
         <button class="wallet-save-btn" onclick="saveLedger()"><i class="fa-solid fa-floppy-disk"></i> 儲存記帳</button>
       </div>
@@ -6934,8 +7083,81 @@ body {
       </div><!-- /wallet-ledger-pane -->
       </div><!-- /wallet-split -->
     </div><!-- /tool-modal-body -->
+    <!-- Gemini API Key 設定 -->
+    <div class="api-key-row">
+      <span style="font-size:0.68rem;color:rgba(101,152,181,0.6);white-space:nowrap;">Gemini Key</span>
+      <input class="api-key-input" id="geminiKeyInput" type="password" placeholder="貼上 Gemini API Key">
+      <button class="api-key-save" onclick="saveGeminiKey()">儲存</button>
+      <button class="api-key-save" onclick="openToolModal('statsModal')" style="background:rgba(224,123,57,0.12);border-color:rgba(224,123,57,0.3);color:#c96928;">
+        <i class="fa-solid fa-chart-pie"></i> 統計
+      </button>
+    </div>
   </div><!-- /tool-modal-card -->
 </div><!-- /walletModal -->
+
+<!-- ══ 統計 MODAL ══ -->
+<div class="tool-modal" id="statsModal" onclick="handleModalBgClick(event,'statsModal')">
+  <div class="tool-modal-card">
+    <div class="tool-modal-header">
+      <span class="tool-modal-title"><i class="fa-solid fa-chart-pie"></i> 消費統計</span>
+      <button class="tool-modal-close" onclick="closeToolModal('statsModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="tool-modal-body stats-body" id="statsBody">
+      <!-- 由 JS 動態渲染 -->
+    </div>
+  </div>
+</div>
+
+<!-- ══ 收據確認全螢幕 ══ -->
+<div class="receipt-overlay" id="receiptOverlay">
+  <div class="receipt-hd">
+    <button class="receipt-back-btn" onclick="closeReceiptOverlay()">
+      <i class="fa-solid fa-chevron-left"></i> 返回
+    </button>
+    <div class="receipt-hd-title">確認收據內容</div>
+    <div class="receipt-hd-sub">請確認或修改以下辨識結果</div>
+  </div>
+  <div class="receipt-body" id="receiptBody">
+    <!-- Loading or confirmed content injected by JS -->
+  </div>
+  <div class="receipt-footer" id="receiptFooter" style="display:none;">
+    <div class="receipt-options-row">
+      <select class="wallet-select" id="receiptDate" style="flex:1;">
+        <option value="3/27">3/27 週四</option>
+        <option value="3/28">3/28 週五</option>
+        <option value="3/29">3/29 週六</option>
+        <option value="3/30">3/30 週日</option>
+        <option value="3/31">3/31 週一</option>
+        <option value="4/1">4/1 週二</option>
+        <option value="4/2">4/2 週三</option>
+        <option value="4/3">4/3 週四</option>
+        <option value="4/4">4/4 週五</option>
+        <option value="4/5">4/5 週六</option>
+        <option value="4/6">4/6 週日</option>
+        <option value="4/7">4/7 週一</option>
+        <option value="4/8">4/8 週二</option>
+      </select>
+      <select class="wallet-select" id="receiptCat" style="flex:1;">
+        <option value="🍜 吃吃喝喝">🍜 吃吃喝喝</option>
+        <option value="🚆 交通">🚆 交通</option>
+        <option value="🎁 伴手禮">🎁 伴手禮</option>
+        <option value="💝 送自己的">💝 送自己的</option>
+        <option value="🏨 住宿">🏨 住宿</option>
+      </select>
+      <select class="wallet-select" id="receiptPayMethod" style="flex:1;">
+        <option value="現金">💴 現金</option>
+        <option value="信用卡">💳 信用卡</option>
+        <option value="PayPay">📱 PayPay</option>
+        <option value="Suica">🚇 Suica</option>
+        <option value="其他">💫 其他</option>
+      </select>
+    </div>
+    <button class="receipt-save-btn" id="receiptSaveBtn" onclick="confirmReceiptSave()">
+      確認儲存
+    </button>
+    <div class="receipt-save-note">儲存後將自動同步至雙機</div>
+  </div>
+</div>
 
 <!-- ══ GIFTS MODAL ══ -->
 <div class="tool-modal" id="giftsModal" onclick="handleModalBgClick(event,'giftsModal')">
@@ -7318,7 +7540,10 @@ function renderLedger() {
       html += '<div class="ledger-item">'
         + '<div>'
           + '<div class="ledger-name">' + escHtml(item.name) + '</div>'
+          + '<div style="display:flex;gap:0.3rem;flex-wrap:wrap;">'
           + (item.cat ? '<div class="ledger-cat">' + escHtml(item.cat) + '</div>' : '')
+          + (item.pay ? '<div class="ledger-cat" style="background:rgba(224,123,57,0.1);color:#c96928;">' + escHtml(item.pay) + '</div>' : '')
+          + '</div>'
         + '</div>'
         + '<div class="ledger-amounts"><div class="ledger-jpy">¥' + item.jpy.toLocaleString() + '</div><div class="ledger-twd">≈ NT$' + twd.toLocaleString() + '</div></div>';
       if (item.thumb) {
@@ -7779,6 +8004,466 @@ document.addEventListener('keydown', function (e) {
       });
     });
   });
+</script>
+
+<!-- ══ Chart.js ══ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<script>
+// ══════════════════════════════════════
+//  Gemini API Key
+// ══════════════════════════════════════
+function saveGeminiKey() {
+  var val = document.getElementById('geminiKeyInput').value.trim();
+  if (!val) return;
+  localStorage.setItem('gemini_api_key', val);
+  document.getElementById('geminiKeyInput').value = '';
+  alert('Gemini API Key 已儲存！');
+}
+(function(){
+  var k = localStorage.getItem('gemini_api_key');
+  if (k) { var el = document.getElementById('geminiKeyInput'); if(el) el.placeholder = 'Key 已設定 ✓'; }
+})();
+
+// ══════════════════════════════════════
+//  更新 saveLedger — 加入支付方式
+// ══════════════════════════════════════
+var _origSaveLedger = null;
+document.addEventListener('DOMContentLoaded', function() {
+  _origSaveLedger = window.saveLedger;
+  window.saveLedger = function() {
+    var name = document.getElementById('ledgerName').value.trim();
+    var amt  = parseFloat(document.getElementById('ledgerAmt').value);
+    var date = document.getElementById('ledgerDate').value;
+    var cat  = document.getElementById('ledgerCat').value;
+    var pay  = document.getElementById('ledgerPayMethod') ? document.getElementById('ledgerPayMethod').value : '現金';
+    if (!name || isNaN(amt) || amt <= 0) { alert('請填寫品項與金額'); return; }
+    var data = getLedger();
+    data.unshift({ name:name, jpy:Math.round(amt), date:date, cat:cat, pay:pay, thumb:window._pendingThumb||null, id:Date.now() });
+    saveLedgerData(data);
+    document.getElementById('ledgerName').value = '';
+    document.getElementById('ledgerAmt').value = '';
+    document.getElementById('thumbPreview').style.display = 'none';
+    document.getElementById('photoInput').value = '';
+    window._pendingThumb = null;
+    renderLedger();
+  };
+});
+
+// ══════════════════════════════════════
+//  收據掃描 — Gemini Vision
+// ══════════════════════════════════════
+var _receiptItems = [];
+
+function handleReceiptScan(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  event.target.value = '';
+  var apiKey = localStorage.getItem('gemini_api_key');
+  if (!apiKey) { alert('請先在 Wallet 底部設定 Gemini API Key'); return; }
+
+  // 顯示 loading
+  var overlay = document.getElementById('receiptOverlay');
+  overlay.classList.add('open');
+  document.getElementById('receiptFooter').style.display = 'none';
+  document.getElementById('receiptBody').innerHTML =
+    '<div class="receipt-loading">' +
+      '<div class="receipt-spinner"></div>' +
+      '<div class="receipt-loading-txt">AI 正在辨識收據…</div>' +
+      '<div class="receipt-loading-sub">請稍候，這可能需要幾秒鐘</div>' +
+    '</div>';
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    var base64 = dataUrl.split(',')[1];
+    var mime   = file.type || 'image/jpeg';
+    callGeminiOCR(apiKey, base64, mime, dataUrl);
+  };
+  reader.readAsDataURL(file);
+}
+
+function callGeminiOCR(apiKey, base64, mime, dataUrl) {
+  var prompt = '這是一張日本商店的收據照片。請辨識所有購買品項名稱和對應金額。以JSON格式回傳：{"store":"店名（若看不到則填unknown）","items":[{"name":"品項名稱（翻譯成繁體中文，保持簡短）","amount":金額數字}]}。只回傳JSON，不含任何其他文字或markdown符號。';
+
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + apiKey, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [
+        { text: prompt },
+        { inlineData: { mimeType: mime, data: base64 } }
+      ]}],
+      generationConfig: { temperature: 0.1, maxOutputTokens: 1024 }
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data) {
+    var text = data.candidates[0].content.parts[0].text;
+    text = text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+    var parsed = JSON.parse(text);
+    _receiptItems = parsed.items || [];
+    renderReceiptConfirm(parsed.store || '', dataUrl);
+  })
+  .catch(function(err) {
+    document.getElementById('receiptBody').innerHTML =
+      '<div class="receipt-loading"><div style="font-size:2rem;">⚠️</div>' +
+      '<div class="receipt-loading-txt">辨識失敗</div>' +
+      '<div class="receipt-loading-sub">' + (err.message || '請確認 API Key 是否正確') + '</div>' +
+      '<button onclick="closeReceiptOverlay()" style="margin-top:1rem;padding:0.6rem 1.5rem;background:#4a7a9b;color:#fff;border:none;border-radius:8px;cursor:pointer;">關閉</button>' +
+      '</div>';
+  });
+}
+
+function renderReceiptConfirm(storeName, dataUrl) {
+  var html = '';
+  // 收據縮圖 + 店名
+  html += '<div class="receipt-store-card">';
+  if (dataUrl) html += '<img src="' + dataUrl + '" style="width:60px;height:60px;object-fit:cover;border-radius:8px;margin-right:0.8rem;">';
+  html += '<div><div class="receipt-store-name">' + escHtml(storeName || '收據') + '</div>' +
+    '<div class="receipt-store-date" style="font-size:0.7rem;color:rgba(101,152,181,0.6);">請選擇下方日期・類別・付款方式</div></div></div>';
+
+  // 品項列表
+  html += '<div class="receipt-items-wrap">';
+  html += '<div class="receipt-items-hd"><span class="receipt-items-label">購買明細</span>' +
+    '<button class="receipt-add-btn" onclick="addReceiptItem()">＋ 新增品項</button></div>';
+  html += '<div id="receiptItemList">';
+  html += renderReceiptItemRows();
+  html += '</div></div>';
+
+  document.getElementById('receiptBody').innerHTML = html;
+  document.getElementById('receiptFooter').style.display = 'block';
+  // 更新儲存按鈕文字
+  document.getElementById('receiptSaveBtn').textContent = '確認儲存（' + _receiptItems.length + ' 筆）';
+}
+
+function renderReceiptItemRows() {
+  if (!_receiptItems.length) return '<div style="padding:1rem;text-align:center;color:rgba(101,152,181,0.4);font-size:0.8rem;">無品項</div>';
+  return _receiptItems.map(function(item, i) {
+    return '<div class="receipt-row">' +
+      '<div class="receipt-row-num">' + (i+1) + '</div>' +
+      '<input class="receipt-row-name" value="' + escHtml(item.name) + '" oninput="_receiptItems[' + i + '].name=this.value">' +
+      '<span style="color:rgba(101,152,181,0.5);font-size:0.8rem;">¥</span>' +
+      '<input class="receipt-row-amt" value="' + item.amount + '" type="number" oninput="_receiptItems[' + i + '].amount=parseFloat(this.value)||0;updateReceiptSaveBtn()">' +
+      '<button class="receipt-row-del" onclick="delReceiptItem(' + i + ')"><i class="fa-solid fa-trash-can"></i></button>' +
+    '</div>';
+  }).join('');
+}
+
+function updateReceiptSaveBtn() {
+  var btn = document.getElementById('receiptSaveBtn');
+  if (btn) btn.textContent = '確認儲存（' + _receiptItems.length + ' 筆）';
+}
+
+function delReceiptItem(i) {
+  _receiptItems.splice(i, 1);
+  document.getElementById('receiptItemList').innerHTML = renderReceiptItemRows();
+  updateReceiptSaveBtn();
+}
+
+function addReceiptItem() {
+  _receiptItems.push({ name: '新品項', amount: 0 });
+  document.getElementById('receiptItemList').innerHTML = renderReceiptItemRows();
+  updateReceiptSaveBtn();
+}
+
+function confirmReceiptSave() {
+  var date = document.getElementById('receiptDate').value;
+  var cat  = document.getElementById('receiptCat').value;
+  var pay  = document.getElementById('receiptPayMethod').value;
+  var data = getLedger();
+  _receiptItems.forEach(function(item) {
+    if (item.name && item.amount > 0) {
+      data.unshift({ name:item.name, jpy:Math.round(item.amount), date:date, cat:cat, pay:pay, thumb:null, id:Date.now() + Math.random() });
+    }
+  });
+  saveLedgerData(data);
+  renderLedger();
+  closeReceiptOverlay();
+  alert('已新增 ' + _receiptItems.filter(function(i){return i.amount>0;}).length + ' 筆記帳！');
+}
+
+function closeReceiptOverlay() {
+  document.getElementById('receiptOverlay').classList.remove('open');
+  _receiptItems = [];
+}
+
+// ══════════════════════════════════════
+//  統計圖表
+// ══════════════════════════════════════
+var _catChart = null;
+var _payChart = null;
+
+function renderStats() {
+  var data = getLedger();
+  var rate = parseFloat(document.getElementById('rateInput').value) || 0.215;
+  var total = data.reduce(function(s,i){ return s+i.jpy; }, 0);
+
+  var catColors = ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f','#edc948','#b07aa1'];
+  var payColors = ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f'];
+
+  // 分類統計
+  var catMap = {};
+  data.forEach(function(i){ catMap[i.cat] = (catMap[i.cat]||0) + i.jpy; });
+  var catEntries = Object.keys(catMap).map(function(k){ return {name:k, amt:catMap[k]}; })
+    .sort(function(a,b){ return b.amt-a.amt; });
+
+  // 支付方式統計
+  var payMap = {};
+  data.forEach(function(i){ var p=i.pay||'現金'; payMap[p]=(payMap[p]||0)+i.jpy; });
+  var payEntries = Object.keys(payMap).map(function(k){ return {name:k, amt:payMap[k]}; })
+    .sort(function(a,b){ return b.amt-a.amt; });
+
+  // Top 10
+  var top10 = data.slice().sort(function(a,b){return b.jpy-a.jpy;}).slice(0,10);
+
+  var html = '';
+
+  // 總計卡
+  html += '<div class="stats-card">' +
+    '<div class="stats-card-title">旅行總支出</div>' +
+    '<div class="stats-total-num">¥' + total.toLocaleString() + '</div>' +
+    '<div class="stats-total-sub">≈ NT$' + Math.round(total*rate).toLocaleString() + '・' + data.length + ' 筆</div>' +
+    '</div>';
+
+  // 分類圓餅圖
+  html += '<div class="stats-card"><div class="stats-card-title">分類支出</div>' +
+    '<div class="stats-chart-row">' +
+    '<canvas id="catChartCanvas" width="120" height="120" class="stats-chart-canvas"></canvas>' +
+    '<div class="stats-legend" id="catLegend"></div>' +
+    '</div></div>';
+
+  // 支付方式圓餅圖
+  html += '<div class="stats-card"><div class="stats-card-title">支付方式</div>' +
+    '<div class="stats-chart-row">' +
+    '<canvas id="payChartCanvas" width="120" height="120" class="stats-chart-canvas"></canvas>' +
+    '<div class="stats-legend" id="payLegend"></div>' +
+    '</div></div>';
+
+  // 花費前十名
+  html += '<div class="stats-card"><div class="stats-card-title">花費金額前十名</div>';
+  top10.forEach(function(item, i) {
+    html += '<div class="stats-top-row">' +
+      '<span class="stats-top-rank">' + (i+1) + '</span>' +
+      '<span class="stats-top-name">' + escHtml(item.name) + '</span>' +
+      '<span class="stats-top-amt">¥' + item.jpy.toLocaleString() + '</span>' +
+      '</div>';
+  });
+  html += '</div>';
+
+  document.getElementById('statsBody').innerHTML = html;
+
+  // 渲染圓餅圖
+  if (_catChart) { _catChart.destroy(); _catChart = null; }
+  if (_payChart) { _payChart.destroy(); _payChart = null; }
+
+  // 分類圖
+  var catLegHtml = '';
+  catEntries.forEach(function(e, i) {
+    var pct = total ? Math.round(e.amt/total*100) : 0;
+    var col = catColors[i % catColors.length];
+    catLegHtml += '<div class="stats-legend-item">' +
+      '<div class="stats-dot" style="background:' + col + '"></div>' +
+      '<span>' + e.name + '</span>' +
+      '<span class="stats-legend-pct">&nbsp;' + pct + '%</span>' +
+      '<span class="stats-legend-amt">¥' + (e.amt/1000).toFixed(1) + 'k</span>' +
+      '</div>';
+  });
+  document.getElementById('catLegend').innerHTML = catLegHtml;
+  _catChart = new Chart(document.getElementById('catChartCanvas'), {
+    type:'doughnut',
+    data:{ labels:catEntries.map(function(e){return e.name;}),
+      datasets:[{ data:catEntries.map(function(e){return e.amt;}),
+        backgroundColor:catEntries.map(function(_,i){return catColors[i%catColors.length];}),
+        borderWidth:2, borderColor:'#fff' }] },
+    options:{ cutout:'65%', plugins:{ legend:{display:false} }, animation:{duration:400} }
+  });
+
+  // 支付方式圖
+  var payLegHtml = '';
+  payEntries.forEach(function(e, i) {
+    var pct = total ? Math.round(e.amt/total*100) : 0;
+    var col = payColors[i % payColors.length];
+    payLegHtml += '<div class="stats-legend-item">' +
+      '<div class="stats-dot" style="background:' + col + '"></div>' +
+      '<span>' + e.name + '</span>' +
+      '<span class="stats-legend-pct">&nbsp;' + pct + '%</span>' +
+      '<span class="stats-legend-amt">¥' + (e.amt/1000).toFixed(1) + 'k</span>' +
+      '</div>';
+  });
+  document.getElementById('payLegend').innerHTML = payLegHtml;
+  _payChart = new Chart(document.getElementById('payChartCanvas'), {
+    type:'doughnut',
+    data:{ labels:payEntries.map(function(e){return e.name;}),
+      datasets:[{ data:payEntries.map(function(e){return e.amt;}),
+        backgroundColor:payEntries.map(function(_,i){return payColors[i%payColors.length];}),
+        borderWidth:2, borderColor:'#fff' }] },
+    options:{ cutout:'65%', plugins:{ legend:{display:false} }, animation:{duration:400} }
+  });
+}
+
+// 統計 modal 開啟時自動渲染
+var _origOpenToolModal = null;
+document.addEventListener('DOMContentLoaded', function() {
+  _origOpenToolModal = window.openToolModal;
+  window.openToolModal = function(id) {
+    _origOpenToolModal(id);
+    if (id === 'statsModal') setTimeout(renderStats, 50);
+  };
+});
+</script>
+
+<!-- ══ Firebase SDK ══ -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ══════════════════════════════════════
+//  FIREBASE 雙機即時同步
+// ══════════════════════════════════════
+(function() {
+  var firebaseConfig = {
+    apiKey: "AIzaSyB4uR8fnIHJnZ9dQXKDmgN2GGka4p9nsPI",
+    authDomain: "tokyo-2026-83d13.firebaseapp.com",
+    projectId: "tokyo-2026-83d13",
+    storageBucket: "tokyo-2026-83d13.firebasestorage.app",
+    messagingSenderId: "464677153412",
+    appId: "1:464677153412:web:ca89f36e7dc1bff28f70d1"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.firestore();
+  var SYNC = db.collection('sync');
+
+  // ── In-memory cache（onSnapshot 更新後存在這裡）──
+  var _cache = { cl: null, memo: null, ledger: null, gifts: null, rate: null };
+  var _fbReady = false; // Firebase 第一次回應後設為 true
+
+  // ── Override getter 函數：有 Firebase 資料就用，否則 fallback localStorage ──
+  window.getClData = function() {
+    return _cache.cl !== null ? _cache.cl
+      : (function(){ try { return JSON.parse(localStorage.getItem('tokyo_cl') || 'null'); } catch(e) { return null; } })();
+  };
+  window.getMemoData = function() {
+    return _cache.memo !== null ? _cache.memo
+      : (function(){ try { return JSON.parse(localStorage.getItem('tokyo_memo') || '[]'); } catch(e) { return []; } })();
+  };
+  window.getLedger = function() {
+    return _cache.ledger !== null ? _cache.ledger
+      : (function(){ try { return JSON.parse(localStorage.getItem('tokyo_ledger') || '[]'); } catch(e) { return []; } })();
+  };
+  window.getGifts = function() {
+    return _cache.gifts !== null ? _cache.gifts
+      : (function(){ try { return JSON.parse(localStorage.getItem('tokyo_gifts') || '[]'); } catch(e) { return []; } })();
+  };
+
+  // ── Override saver 函數：同時寫 Firebase + localStorage（離線備援）──
+  window.saveClData = function(data) {
+    _cache.cl = data;
+    localStorage.setItem('tokyo_cl', JSON.stringify(data));
+    SYNC.doc('cl').set({ items: data }).catch(function() {});
+  };
+  window.saveMemoData = function(data) {
+    _cache.memo = data;
+    localStorage.setItem('tokyo_memo', JSON.stringify(data));
+    SYNC.doc('memo').set({ items: data }).catch(function() {});
+  };
+  window.saveLedgerData = function(data) {
+    _cache.ledger = data;
+    localStorage.setItem('tokyo_ledger', JSON.stringify(data));
+    SYNC.doc('ledger').set({ items: data }).catch(function() {});
+  };
+  window.saveGifts = function(data) {
+    _cache.gifts = data;
+    localStorage.setItem('tokyo_gifts', JSON.stringify(data));
+    SYNC.doc('gifts').set({ items: data }).catch(function() {});
+  };
+  window.saveRate = function() {
+    var val = document.getElementById('rateInput').value;
+    _cache.rate = val;
+    localStorage.setItem('tokyo_rate', val);
+    SYNC.doc('settings').set({ rate: val }).catch(function() {});
+    updateCalcTwd();
+    renderLedger();
+  };
+
+  // ── 首次遷移：localStorage → Firebase（只在 Firebase 沒有資料時執行）──
+  function _migrateKey(docKey, lsKey, dflt) {
+    SYNC.doc(docKey).get().then(function(snap) {
+      if (!snap.exists) {
+        var lsData; try { lsData = JSON.parse(localStorage.getItem(lsKey)); } catch(e) {}
+        SYNC.doc(docKey).set({ items: lsData !== null && lsData !== undefined ? lsData : dflt });
+      }
+    }).catch(function() {});
+  }
+
+  // ── 即時監聽：對方手機更新後，這台立刻 re-render ──
+  function _startListeners() {
+    SYNC.doc('cl').onSnapshot(function(snap) {
+      if (snap.exists && Array.isArray(snap.data().items)) {
+        _cache.cl = snap.data().items;
+        localStorage.setItem('tokyo_cl', JSON.stringify(_cache.cl));
+        if (document.getElementById('clList')) renderClList();
+      }
+    }, function() {});
+
+    SYNC.doc('memo').onSnapshot(function(snap) {
+      if (snap.exists && Array.isArray(snap.data().items)) {
+        _cache.memo = snap.data().items;
+        localStorage.setItem('tokyo_memo', JSON.stringify(_cache.memo));
+        if (document.getElementById('memoList')) renderMemoList();
+      }
+    }, function() {});
+
+    SYNC.doc('ledger').onSnapshot(function(snap) {
+      if (snap.exists && Array.isArray(snap.data().items)) {
+        _cache.ledger = snap.data().items;
+        localStorage.setItem('tokyo_ledger', JSON.stringify(_cache.ledger));
+        if (document.getElementById('ledgerList')) renderLedger();
+      }
+    }, function() {});
+
+    SYNC.doc('gifts').onSnapshot(function(snap) {
+      if (snap.exists && Array.isArray(snap.data().items)) {
+        _cache.gifts = snap.data().items;
+        localStorage.setItem('tokyo_gifts', JSON.stringify(_cache.gifts));
+        if (document.getElementById('giftsList')) renderGifts();
+      }
+    }, function() {});
+
+    SYNC.doc('settings').onSnapshot(function(snap) {
+      if (snap.exists && snap.data().rate) {
+        _cache.rate = snap.data().rate;
+        localStorage.setItem('tokyo_rate', _cache.rate);
+        var rateInput = document.getElementById('rateInput');
+        // 避免在使用者正在輸入時被覆蓋
+        if (rateInput && document.activeElement !== rateInput) {
+          rateInput.value = _cache.rate;
+          if (typeof updateCalcTwd === 'function') updateCalcTwd();
+          if (typeof renderLedger === 'function') renderLedger();
+        }
+      }
+    }, function() {});
+  }
+
+  // ── 啟動 ──
+  document.addEventListener('DOMContentLoaded', function() {
+    _migrateKey('cl', 'tokyo_cl', []);
+    _migrateKey('memo', 'tokyo_memo', []);
+    _migrateKey('ledger', 'tokyo_ledger', []);
+    _migrateKey('gifts', 'tokyo_gifts', []);
+    // 遷移匯率
+    SYNC.doc('settings').get().then(function(snap) {
+      if (!snap.exists) {
+        var r = localStorage.getItem('tokyo_rate') || '0.215';
+        SYNC.doc('settings').set({ rate: r });
+      }
+    }).catch(function() {});
+
+    _startListeners();
+    _fbReady = true;
+  });
+})();
 </script>
 
 </body>
