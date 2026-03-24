@@ -2643,11 +2643,12 @@ body {
 .stats-card-title { font-size:0.88rem; font-weight:700; color:#1a2f45; margin-bottom:0.75rem; }
 .stats-total-num { font-size:1.9rem; font-weight:800; color:#1a2f45; }
 .stats-total-sub { font-size:0.75rem; color:rgba(101,152,181,0.65); margin-top:0.2rem; }
-.stats-chart-row { display:flex; align-items:center; gap:0.9rem; }
-.stats-legend { flex:1; }
+.stats-chart-col { display:flex; flex-direction:column; align-items:center; gap:0.8rem; }
+.stats-chart-wrap { width:90px; height:90px; flex-shrink:0; }
+.stats-legend { width:100%; }
 .stats-legend-item {
   display:flex; align-items:center; gap:0.4rem;
-  margin-bottom:0.3rem; font-size:0.75rem; color:#1a2f45;
+  margin-bottom:0.35rem; font-size:0.75rem; color:#1a2f45;
 }
 .stats-dot { width:0.55rem; height:0.55rem; border-radius:50%; flex-shrink:0; }
 .stats-legend-pct { color:rgba(101,152,181,0.55); font-size:0.7rem; }
@@ -8575,15 +8576,15 @@ function renderStats() {
 
   // 分類圓餅圖
   html += '<div class="stats-card"><div class="stats-card-title">分類支出</div>' +
-    '<div class="stats-chart-row">' +
-    '<canvas id="catChartCanvas" width="120" height="120" class="stats-chart-canvas"></canvas>' +
+    '<div class="stats-chart-col">' +
+    '<div class="stats-chart-wrap"><canvas id="catChartCanvas"></canvas></div>' +
     '<div class="stats-legend" id="catLegend"></div>' +
     '</div></div>';
 
   // 支付方式圓餅圖
   html += '<div class="stats-card"><div class="stats-card-title">支付方式</div>' +
-    '<div class="stats-chart-row">' +
-    '<canvas id="payChartCanvas" width="120" height="120" class="stats-chart-canvas"></canvas>' +
+    '<div class="stats-chart-col">' +
+    '<div class="stats-chart-wrap"><canvas id="payChartCanvas"></canvas></div>' +
     '<div class="stats-legend" id="payLegend"></div>' +
     '</div></div>';
 
@@ -8623,7 +8624,7 @@ function renderStats() {
       datasets:[{ data:catEntries.map(function(e){return e.amt;}),
         backgroundColor:catEntries.map(function(_,i){return catColors[i%catColors.length];}),
         borderWidth:2, borderColor:'#fff' }] },
-    options:{ cutout:'65%', plugins:{ legend:{display:false} }, animation:{duration:400} }
+    options:{ responsive:true, maintainAspectRatio:true, cutout:'65%', plugins:{ legend:{display:false} }, animation:{duration:400} }
   });
 
   // 支付方式圖
@@ -8645,7 +8646,7 @@ function renderStats() {
       datasets:[{ data:payEntries.map(function(e){return e.amt;}),
         backgroundColor:payEntries.map(function(_,i){return payColors[i%payColors.length];}),
         borderWidth:2, borderColor:'#fff' }] },
-    options:{ cutout:'65%', plugins:{ legend:{display:false} }, animation:{duration:400} }
+    options:{ responsive:true, maintainAspectRatio:true, cutout:'65%', plugins:{ legend:{display:false} }, animation:{duration:400} }
   });
 }
 
