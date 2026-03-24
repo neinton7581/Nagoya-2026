@@ -7754,6 +7754,15 @@ document.addEventListener('keydown', function (e) {
   }
 </script>
 
+<script>
+  document.querySelectorAll('.voucher-day-input').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      document.querySelectorAll('.voucher-item-input').forEach(function(cb) {
+        cb.checked = false;
+      });
+    });
+  });
+</script>
 
 </body>
 </html>
