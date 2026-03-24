@@ -8099,9 +8099,21 @@ function callGeminiOCR(apiKey, base64, mime, dataUrl) {
   })
   .then(function(r){ return r.json(); })
   .then(function(data) {
+    // 先檢查 API 是否回傳錯誤
+    if (data.error) {
+      throw new Error('API 錯誤：' + (data.error.message || JSON.stringify(data.error)));
+    }
+    if (!data.candidates || !data.candidates[0]) {
+      throw new Error('API 無回應內容，可能原因：圖片過大、Key 額度不足，或 Key 輸入有誤\n\nAPI 回傳：' + JSON.stringify(data).slice(0, 200));
+    }
     var text = data.candidates[0].content.parts[0].text;
     text = text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
-    var parsed = JSON.parse(text);
+    var parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch(e) {
+      throw new Error('JSON 解析失敗，AI 回傳內容：' + text.slice(0, 200));
+    }
     _receiptItems = parsed.items || [];
     renderReceiptConfirm(parsed.store || '', dataUrl);
   })
@@ -8109,7 +8121,7 @@ function callGeminiOCR(apiKey, base64, mime, dataUrl) {
     document.getElementById('receiptBody').innerHTML =
       '<div class="receipt-loading"><div style="font-size:2rem;">⚠️</div>' +
       '<div class="receipt-loading-txt">辨識失敗</div>' +
-      '<div class="receipt-loading-sub">' + (err.message || '請確認 API Key 是否正確') + '</div>' +
+      '<div class="receipt-loading-sub" style="max-width:280px;text-align:center;word-break:break-all;">' + escHtml(err.message || '未知錯誤') + '</div>' +
       '<button onclick="closeReceiptOverlay()" style="margin-top:1rem;padding:0.6rem 1.5rem;background:#4a7a9b;color:#fff;border:none;border-radius:8px;cursor:pointer;">關閉</button>' +
       '</div>';
   });
