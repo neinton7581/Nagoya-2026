@@ -7764,9 +7764,12 @@ document.addEventListener('keydown', function (e) {
   var _voucherDayWasChecked = false;
 
   document.querySelectorAll('.voucher-day-input').forEach(function(radio) {
-    radio.addEventListener('pointerdown', function() {
-      _voucherDayWasChecked = this.checked;
-    });
+    var label = document.querySelector('label[for="' + radio.id + '"]');
+    if (label) {
+      label.addEventListener('pointerdown', function() {
+        _voucherDayWasChecked = radio.checked;
+      });
+    }
     radio.addEventListener('click', function() {
       if (_voucherDayWasChecked) {
         this.checked = false;
