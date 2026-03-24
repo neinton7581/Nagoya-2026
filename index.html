@@ -2115,6 +2115,24 @@
   .ledger-store-group.collapsed .ledger-store-arrow { transform: rotate(-90deg); }
   .ledger-store-items { overflow: hidden; }
   .ledger-store-group.collapsed .ledger-store-items { display: none; }
+  /* 店家刪除按鈕 */
+  .ledger-store-del {
+    background:none; border:none; cursor:pointer; padding:0.18rem 0.3rem;
+    color:rgba(200,80,80,0.45); font-size:0.7rem; flex-shrink:0; line-height:1;
+    border-radius:4px; transition:color 0.15s, background 0.15s;
+  }
+  .ledger-store-del:active { color:#c05050; background:rgba(224,112,112,0.1); }
+  /* 可點擊編輯的文字提示 */
+  .ledger-editable { cursor:pointer; border-radius:4px; transition:background 0.15s; }
+  .ledger-editable:active { background:rgba(101,152,181,0.1); }
+  .ledger-store-name.ledger-editable:active { background:rgba(101,152,181,0.12); }
+  /* 內嵌編輯輸入框 */
+  .ledger-inline-input {
+    font-size:inherit; font-family:inherit; font-weight:inherit; color:#1a2f45;
+    background:transparent; border:none; border-bottom:1.5px solid #6598b5;
+    outline:none; padding:0 0 1px; min-width:4rem; max-width:100%;
+    box-sizing:border-box;
+  }
   .ledger-date-header {
     display: flex;
     justify-content: space-between;
@@ -7100,15 +7118,15 @@ body {
             <option value="4/8">4/8 週二</option>
           </select>
           <select class="wallet-select" id="ledgerCat">
-            <option value="🍜 吃吃喝喝">🍜 吃吃喝喝</option>
-            <option value="🚆 交通">🚆 交通</option>
-            <option value="🎁 伴手禮">🎁 伴手禮</option>
-            <option value="💝 送自己的">💝 送自己的</option>
-            <option value="🏨 住宿">🏨 住宿</option>
+            <option value="吃吃喝喝">吃吃喝喝</option>
+            <option value="交通">交通</option>
+            <option value="伴手禮">伴手禮</option>
+            <option value="送自己的">送自己的</option>
+            <option value="住宿">住宿</option>
           </select>
         </div>
         <div class="wallet-field-row">
-          <input class="wallet-input" id="ledgerStore" placeholder="🏪 店名（選填）" type="text">
+          <input class="wallet-input" id="ledgerStore" placeholder="店名（選填）" type="text">
         </div>
         <div class="wallet-field-row">
           <input class="wallet-input" id="ledgerName" placeholder="品項名稱" type="text">
@@ -7121,8 +7139,8 @@ body {
           <select class="wallet-select" id="ledgerPayMethod">
             <option value="現金">💴 現金</option>
             <option value="信用卡">💳 信用卡</option>
-            <option value="PayPay">📱 PayPay</option>
-            <option value="Suica">🚇 Suica</option>
+            <option value="PayPay">🍉 Suica</option>
+            <option value="Suica">📱 PayPay</option>
             <option value="其他">💫 其他</option>
           </select>
         </div>
@@ -7664,11 +7682,19 @@ function renderLedger() {
       var storeTwd = Math.round(storeJpy * rate);
       var sgid = dgid + '-s-' + store.replace(/[^a-zA-Z0-9]/g,'_');
 
+      var dEnc = encodeURIComponent(date);
+      var sEnc = encodeURIComponent(store);
+
       html += '<div class="ledger-store-group" id="' + sgid + '">';
       html += '<div class="ledger-store-header" onclick="toggleLedgerGroup(\'' + sgid + '\')">'
-        + '<span class="ledger-store-name"><i class="fa-solid fa-store" style="font-size:0.65rem;opacity:0.6;"></i>' + escHtml(store) + '</span>'
+        // 店名 — 只有點到文字才觸發編輯，stopPropagation 避免同時 toggle
+        + '<span class="ledger-store-name ledger-editable" onclick="editStoreName(\'' + dEnc + '\',\'' + sEnc + '\',event)">'
+        + '<i class="fa-solid fa-store" style="font-size:0.65rem;opacity:0.6;flex-shrink:0;"></i>'
+        + escHtml(store) + '</span>'
         + '<span class="ledger-store-subtotal">'
         + '¥' + storeJpy.toLocaleString() + ' ≈ NT$' + storeTwd.toLocaleString()
+        // 整店刪除按鈕
+        + '<button class="ledger-store-del" onclick="delLedgerStore(\'' + dEnc + '\',\'' + sEnc + '\',event)" title="刪除此店全部記錄"><i class="fa-solid fa-trash"></i></button>'
         + '<i class="fa-solid fa-chevron-down ledger-store-arrow"></i>'
         + '</span>'
         + '</div>';
@@ -7683,8 +7709,9 @@ function renderLedger() {
           ? '<span style="color:#e07070;">−NT$' + Math.abs(twd).toLocaleString() + '</span>'
           : '≈ NT$' + twd.toLocaleString();
         html += '<div class="ledger-item">'
-          + '<div>'
-            + '<div class="ledger-name">' + escHtml(item.name) + '</div>'
+          + '<div style="flex:1;min-width:0;">'
+            // 細項名稱 — 只有點到文字才觸發編輯
+            + '<div class="ledger-name ledger-editable" onclick="editItemName(' + item.id + ',event)">' + escHtml(item.name) + '</div>'
             + '<div style="display:flex;gap:0.3rem;flex-wrap:wrap;">'
             + (item.cat ? '<div class="ledger-cat">' + escHtml(item.cat) + '</div>' : '')
             + (item.pay ? '<div class="ledger-cat" style="background:rgba(224,123,57,0.1);color:#c96928;">' + escHtml(item.pay) + '</div>' : '')
@@ -7710,6 +7737,91 @@ function delLedger(id) {
   var data = getLedger().filter(function(i){ return i.id !== id; });
   saveLedgerData(data);
   renderLedger();
+}
+
+// 刪除某日期內某店家的全部記錄
+function delLedgerStore(dateEnc, storeEnc, event) {
+  event.stopPropagation();
+  var date  = decodeURIComponent(dateEnc);
+  var store = decodeURIComponent(storeEnc);
+  if (!confirm('確定要刪除「' + store + '」的所有消費記錄嗎？')) return;
+  var data = getLedger().filter(function(item) {
+    var s = (item.store && item.store.trim()) ? item.store.trim() : '其他';
+    return !(item.date === date && s === store);
+  });
+  saveLedgerData(data);
+  renderLedger();
+}
+
+// 點擊店名 → 內嵌編輯
+function editStoreName(dateEnc, storeEnc, event) {
+  event.stopPropagation();
+  var date     = decodeURIComponent(dateEnc);
+  var origStore = decodeURIComponent(storeEnc);
+  var spanEl   = event.currentTarget;
+
+  spanEl.innerHTML =
+    '<i class="fa-solid fa-store" style="font-size:0.65rem;opacity:0.6;flex-shrink:0;margin-right:0.3rem;"></i>'
+    + '<input class="ledger-inline-input" style="flex:1;" onclick="event.stopPropagation()">';
+  var inp = spanEl.querySelector('input');
+  inp.value = origStore;
+  inp.focus();
+  inp.select();
+
+  var saved = false;
+  function save() {
+    if (saved) return;
+    saved = true;
+    var v = inp.value.trim() || origStore;
+    if (v !== origStore) {
+      var data = getLedger();
+      data.forEach(function(item) {
+        var s = (item.store && item.store.trim()) ? item.store.trim() : '其他';
+        if (item.date === date && s === origStore) {
+          item.store = (v === '其他') ? '' : v;
+        }
+      });
+      saveLedgerData(data);
+    }
+    renderLedger();
+  }
+  inp.addEventListener('blur', save);
+  inp.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter')  { e.preventDefault(); inp.blur(); }
+    if (e.key === 'Escape') { inp.value = origStore; inp.blur(); }
+  });
+}
+
+// 點擊細項名稱 → 內嵌編輯
+function editItemName(id, event) {
+  event.stopPropagation();
+  var nameEl   = event.currentTarget;
+  var origName = nameEl.textContent.trim();
+
+  nameEl.innerHTML = '<input class="ledger-inline-input" style="width:100%;box-sizing:border-box;" onclick="event.stopPropagation()">';
+  var inp = nameEl.querySelector('input');
+  inp.value = origName;
+  inp.focus();
+  inp.select();
+
+  var saved = false;
+  function save() {
+    if (saved) return;
+    saved = true;
+    var v = inp.value.trim() || origName;
+    if (v !== origName) {
+      var data = getLedger();
+      var found = data.filter(function(i){ return i.id === id; });
+      if (found.length) found[0].name = v;
+      saveLedgerData(data);
+    }
+    renderLedger();
+  }
+  inp.addEventListener('blur', save);
+  inp.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter')  { e.preventDefault(); inp.blur(); }
+    if (e.key === 'Escape') { inp.value = origName; inp.blur(); }
+  });
 }
 
 function toggleLedgerGroup(gid) {
