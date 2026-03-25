@@ -8772,7 +8772,10 @@ document.addEventListener('DOMContentLoaded', function() {
     SYNC.doc(docKey).get().then(function(snap) {
       if (!snap.exists) {
         var lsData; try { lsData = JSON.parse(localStorage.getItem(lsKey)); } catch(e) {}
-        SYNC.doc(docKey).set({ items: lsData !== null && lsData !== undefined ? lsData : dflt });
+        // 只有 localStorage 有實際資料才遷移；無資料時不寫空陣列，讓 initClData 負責建立預設值
+        if (lsData !== null && lsData !== undefined) {
+          SYNC.doc(docKey).set({ items: lsData });
+        }
       }
     }).catch(function() {});
   }
