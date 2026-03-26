@@ -2400,6 +2400,28 @@
   }
   .wallet-save-btn:active { background: #4a7a9b; }
 
+  .currency-toggle-btn {
+    flex-shrink: 0;
+    padding: 0 0.7rem;
+    height: 2.55rem;
+    border: 1px solid rgba(101,152,181,0.3);
+    border-radius: 8px;
+    background: rgba(101,152,181,0.08);
+    color: #4a7a9b;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: 'Josefin Sans', sans-serif;
+    letter-spacing: 0.05em;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .currency-toggle-btn.twd {
+    background: rgba(224,123,57,0.1);
+    border-color: rgba(224,123,57,0.35);
+    color: #c96928;
+  }
+
   /* ledger */
   .wallet-ledger {
     margin-top: 1.2rem;
@@ -7332,6 +7354,7 @@ body {
           <input class="wallet-input" id="ledgerName" placeholder="品項名稱" type="text">
         </div>
         <div class="wallet-field-row">
+          <button class="currency-toggle-btn" id="currencyToggle" onclick="toggleLedgerCurrency()">¥ JPY</button>
           <input class="wallet-input" id="ledgerAmt" placeholder="日幣金額 ¥" type="number" inputmode="decimal" style="flex:1;">
           <img id="thumbPreview" class="wallet-thumb-preview" alt="預覽" onclick="openLightbox(this.src)">
         </div>
@@ -7873,6 +7896,28 @@ function getLedger() {
 }
 function saveLedgerData(d) { localStorage.setItem('tokyo_ledger', JSON.stringify(d)); }
 
+var _ledgerCurrency = 'JPY';
+
+function toggleLedgerCurrency() {
+  _ledgerCurrency = _ledgerCurrency === 'JPY' ? 'TWD' : 'JPY';
+  var btn = document.getElementById('currencyToggle');
+  var inp = document.getElementById('ledgerAmt');
+  if (_ledgerCurrency === 'TWD') {
+    btn.textContent = 'NT$ TWD';
+    btn.classList.add('twd');
+    inp.placeholder = '台幣金額 NT$';
+  } else {
+    btn.textContent = '¥ JPY';
+    btn.classList.remove('twd');
+    inp.placeholder = '日幣金額 ¥';
+  }
+}
+
+function itemToTwd(item, rate) {
+  if (item.currency === 'TWD') return item.amt || 0;
+  return Math.round((item.amt !== undefined ? item.amt : (item.jpy || 0)) * rate);
+}
+
 function saveLedger() {
   var name = document.getElementById('ledgerName').value.trim();
   var amt = parseFloat(document.getElementById('ledgerAmt').value);
@@ -7880,7 +7925,9 @@ function saveLedger() {
   var cat = document.getElementById('ledgerCat').value;
   if (!name || isNaN(amt) || amt <= 0) { alert('請填寫品項與金額'); return; }
   var data = getLedger();
-  data.unshift({ name: name, jpy: Math.round(amt), date: date, cat: cat, thumb: _pendingThumb || null, id: Date.now() });
+  var entry = { name: name, amt: Math.round(amt), currency: _ledgerCurrency, date: date, cat: cat, thumb: _pendingThumb || null, id: Date.now() };
+  if (_ledgerCurrency === 'JPY') entry.jpy = Math.round(amt);
+  data.unshift(entry);
   saveLedgerData(data);
   document.getElementById('ledgerName').value = '';
   document.getElementById('ledgerAmt').value = '';
@@ -7893,9 +7940,8 @@ function saveLedger() {
 function renderLedger() {
   var data = getLedger();
   var rate = getRate();
-  var totalJpy = data.reduce(function(s, i){ return s + i.jpy; }, 0);
-  var totalTwd = Math.round(totalJpy * rate);
-  document.getElementById('ledgerTotal').textContent = '合計 ¥' + totalJpy.toLocaleString() + ' ≈ NT$' + totalTwd.toLocaleString();
+  var totalTwd = data.reduce(function(s, i){ return s + itemToTwd(i, rate); }, 0);
+  document.getElementById('ledgerTotal').textContent = '合計 NT$' + totalTwd.toLocaleString();
 
   if (!data.length) {
     document.getElementById('ledgerList').innerHTML = '<div style="text-align:center;color:rgba(101,152,181,0.35);font-size:0.8rem;padding:2rem 0;">還沒有記帳項目</div>';
@@ -7915,15 +7961,14 @@ function renderLedger() {
   var html = '';
   dateOrder.forEach(function(date) {
     var dateItems = dateGroups[date];
-    var dayJpy = dateItems.reduce(function(s, i){ return s + i.jpy; }, 0);
-    var dayTwd = Math.round(dayJpy * rate);
+    var dayTwd = dateItems.reduce(function(s, i){ return s + itemToTwd(i, rate); }, 0);
     var dgid = 'ldg-' + date.replace(/\//g,'-');
 
     html += '<div class="ledger-date-group" id="' + dgid + '">';
     html += '<div class="ledger-date-header" onclick="toggleLedgerGroup(\'' + dgid + '\')">'
       + '<span class="ledger-date-label">' + escHtml(date) + '</span>'
       + '<span style="display:flex;align-items:center;gap:0.5rem;">'
-      + '<span class="ledger-date-subtotal">¥' + dayJpy.toLocaleString() + ' ≈ NT$' + dayTwd.toLocaleString() + '</span>'
+      + '<span class="ledger-date-subtotal">NT$' + dayTwd.toLocaleString() + '</span>'
       + '<i class="fa-solid fa-chevron-down ledger-date-arrow"></i>'
       + '</span>'
       + '</div>';
@@ -7941,8 +7986,7 @@ function renderLedger() {
 
     storeOrder.forEach(function(store) {
       var storeItems = storeGroups[store];
-      var storeJpy = storeItems.reduce(function(s, i){ return s + i.jpy; }, 0);
-      var storeTwd = Math.round(storeJpy * rate);
+      var storeTwd = storeItems.reduce(function(s, i){ return s + itemToTwd(i, rate); }, 0);
       var sgid = dgid + '-s-' + store.replace(/[^a-zA-Z0-9]/g,'_');
 
       var dEnc = encodeURIComponent(date);
@@ -7955,7 +7999,7 @@ function renderLedger() {
         + '<i class="fa-solid fa-store" style="font-size:0.65rem;opacity:0.6;flex-shrink:0;"></i>'
         + escHtml(store) + '</span>'
         + '<span class="ledger-store-subtotal">'
-        + '¥' + storeJpy.toLocaleString() + ' ≈ NT$' + storeTwd.toLocaleString()
+        + 'NT$' + storeTwd.toLocaleString()
         // 整店刪除按鈕
         + '<button class="ledger-store-del" onclick="delLedgerStore(\'' + dEnc + '\',\'' + sEnc + '\',event)" title="刪除此店全部記錄"><i class="fa-solid fa-trash"></i></button>'
         + '<i class="fa-solid fa-chevron-down ledger-store-arrow"></i>'
@@ -7964,13 +8008,16 @@ function renderLedger() {
       html += '<div class="ledger-store-items">';
 
       storeItems.forEach(function(item) {
-        var twd = Math.round(item.jpy * rate);
-        var jpyStr = item.jpy < 0
-          ? '<span style="color:#e07070;">−¥' + Math.abs(item.jpy).toLocaleString() + '</span>'
-          : '¥' + item.jpy.toLocaleString();
-        var twdStr = item.jpy < 0
-          ? '<span style="color:#e07070;">−NT$' + Math.abs(twd).toLocaleString() + '</span>'
-          : '≈ NT$' + twd.toLocaleString();
+        var isTwd = item.currency === 'TWD';
+        var origAmt = item.amt !== undefined ? item.amt : (item.jpy || 0);
+        var twdAmt = isTwd ? origAmt : Math.round(origAmt * rate);
+        var isNeg = origAmt < 0;
+        var jpyStr = isTwd ? '' : (isNeg
+          ? '<span style="color:#e07070;">−¥' + Math.abs(origAmt).toLocaleString() + '</span>'
+          : '¥' + origAmt.toLocaleString());
+        var twdStr = isNeg
+          ? '<span style="color:#e07070;">−NT$' + Math.abs(twdAmt).toLocaleString() + '</span>'
+          : (isTwd ? 'NT$' : '≈ NT$') + twdAmt.toLocaleString();
         html += '<div class="ledger-item">'
           + '<div style="flex:1;min-width:0;">'
             // 細項名稱 — 只有點到文字才觸發編輯
@@ -8854,33 +8901,33 @@ var _payChart = null;
 function renderStats() {
   var data = getLedger();
   var rate = parseFloat(document.getElementById('rateInput').value) || 0.215;
-  var total = data.reduce(function(s,i){ return s+i.jpy; }, 0);
+  var total = data.reduce(function(s,i){ return s + itemToTwd(i, rate); }, 0);
 
   var catColors = ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f','#edc948','#b07aa1'];
   var payColors = ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f'];
 
-  // 分類統計
+  // 分類統計（以 TWD 為單位）
   var catMap = {};
-  data.forEach(function(i){ catMap[i.cat] = (catMap[i.cat]||0) + i.jpy; });
+  data.forEach(function(i){ catMap[i.cat] = (catMap[i.cat]||0) + itemToTwd(i, rate); });
   var catEntries = Object.keys(catMap).map(function(k){ return {name:k, amt:catMap[k]}; })
     .sort(function(a,b){ return b.amt-a.amt; });
 
-  // 支付方式統計
+  // 支付方式統計（以 TWD 為單位）
   var payMap = {};
-  data.forEach(function(i){ var p=i.pay||'現金'; payMap[p]=(payMap[p]||0)+i.jpy; });
+  data.forEach(function(i){ var p=i.pay||'現金'; payMap[p]=(payMap[p]||0)+itemToTwd(i, rate); });
   var payEntries = Object.keys(payMap).map(function(k){ return {name:k, amt:payMap[k]}; })
     .sort(function(a,b){ return b.amt-a.amt; });
 
-  // Top 10
-  var top10 = data.slice().sort(function(a,b){return b.jpy-a.jpy;}).slice(0,10);
+  // Top 10（以 TWD 排序）
+  var top10 = data.slice().sort(function(a,b){ return itemToTwd(b,rate)-itemToTwd(a,rate); }).slice(0,10);
 
   var html = '';
 
   // 總計卡
   html += '<div class="stats-card">' +
     '<div class="stats-card-title">旅行總支出</div>' +
-    '<div class="stats-total-num">¥' + total.toLocaleString() + '</div>' +
-    '<div class="stats-total-sub">≈ NT$' + Math.round(total*rate).toLocaleString() + '・' + data.length + ' 筆</div>' +
+    '<div class="stats-total-num">NT$' + total.toLocaleString() + '</div>' +
+    '<div class="stats-total-sub">' + data.length + ' 筆</div>' +
     '</div>';
 
   // 分類圓餅圖
@@ -8903,7 +8950,7 @@ function renderStats() {
     html += '<div class="stats-top-row">' +
       '<span class="stats-top-rank">' + (i+1) + '</span>' +
       '<span class="stats-top-name">' + escHtml(item.name) + '</span>' +
-      '<span class="stats-top-amt">¥' + item.jpy.toLocaleString() + '</span>' +
+      '<span class="stats-top-amt">NT$' + itemToTwd(item, rate).toLocaleString() + '</span>' +
       '</div>';
   });
   html += '</div>';
@@ -8923,7 +8970,7 @@ function renderStats() {
       '<div class="stats-dot" style="background:' + col + '"></div>' +
       '<span>' + e.name + '</span>' +
       '<span class="stats-legend-pct">&nbsp;' + pct + '%</span>' +
-      '<span class="stats-legend-amt">¥' + (e.amt/1000).toFixed(1) + 'k</span>' +
+      '<span class="stats-legend-amt">NT$' + (e.amt/1000).toFixed(1) + 'k</span>' +
       '</div>';
   });
   document.getElementById('catLegend').innerHTML = catLegHtml;
@@ -8945,7 +8992,7 @@ function renderStats() {
       '<div class="stats-dot" style="background:' + col + '"></div>' +
       '<span>' + e.name + '</span>' +
       '<span class="stats-legend-pct">&nbsp;' + pct + '%</span>' +
-      '<span class="stats-legend-amt">¥' + (e.amt/1000).toFixed(1) + 'k</span>' +
+      '<span class="stats-legend-amt">NT$' + (e.amt/1000).toFixed(1) + 'k</span>' +
       '</div>';
   });
   document.getElementById('payLegend').innerHTML = payLegHtml;
