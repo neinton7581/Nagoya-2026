@@ -8,6 +8,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Tokyo Travel">
 <meta name="format-detection" content="telephone=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
 <title>Tokyo 2026 — Spring Journey</title>
@@ -1999,6 +2002,40 @@
   @media (max-width: 480px) {
     .wl-add-row { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
     .wl-add-btn { grid-column: 1 / -1; }
+  }
+
+  /* ── SW 更新 Toast ── */
+  #sw-update-toast {
+    display: none;
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(74,106,130,0.97);
+    color: #fff8ef;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 0.78rem;
+    padding: 0.65rem 1rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+    z-index: 9999;
+    white-space: nowrap;
+    align-items: center;
+    gap: 0.7rem;
+    backdrop-filter: blur(8px);
+  }
+  #sw-update-toast.show { display: flex; }
+  #sw-update-btn {
+    background: #fff8ef;
+    color: #4a6a82;
+    border: none;
+    border-radius: 12px;
+    padding: 0.3rem 0.7rem;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-weight: 600;
   }
 
   /* ── INFO modal ── */
@@ -8227,13 +8264,6 @@ document.addEventListener('DOMContentLoaded', function() {
     calcDayMinHeight();
   });
 
-  // 展開行程卡時隱藏 footer，關閉（切換 tab）時恢復
-  document.querySelectorAll('.day-toggle-input').forEach(function(input) {
-    input.addEventListener('change', function() {
-      document.body.classList.toggle('day-card-open', this.checked);
-    });
-  });
-
   // 每次開啟都從封面開始，不還原上次位置
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
@@ -8342,6 +8372,7 @@ document.addEventListener('DOMContentLoaded', function() {
             r.checked = false;
           });
         }
+        document.body.classList.remove('day-card-open');
         var dayGrid = label.closest('.day-grid');
         if (dayGrid) {
           var gridTop = dayGrid.getBoundingClientRect().top + window.pageYOffset - navH - 8;
@@ -8370,6 +8401,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Step 4 — 展開目標天
         input.checked = true;
+        document.body.classList.add('day-card-open');
 
         // Step 5 — scroll 到 label 置頂（等 layout 穩定後）
         requestAnimationFrame(function () {
@@ -8465,15 +8497,48 @@ document.addEventListener('keydown', function (e) {
 
 
 <script>
+  var _swReg = null;
+  var _swWaiting = null;
+
+  function swApplyUpdate() {
+    if (_swWaiting) {
+      _swWaiting.postMessage({ type: 'SKIP_WAITING' });
+    }
+  }
+
   if ('serviceWorker' in navigator) {
+    // ── 偵測 controller 切換後立即 reload ──
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      window.location.reload();
+    });
+
     window.addEventListener('load', function() {
       navigator.serviceWorker.register('./sw.js')
         .then(function(reg) {
+          _swReg = reg;
           console.log('[SW] Registered, scope:', reg.scope);
+
+          // 偵測新 SW 安裝完成 → 顯示更新 Toast
+          reg.addEventListener('updatefound', function() {
+            var newWorker = reg.installing;
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                _swWaiting = newWorker;
+                document.getElementById('sw-update-toast').classList.add('show');
+              }
+            });
+          });
         })
         .catch(function(err) {
           console.warn('[SW] Registration failed:', err);
         });
+    });
+
+    // ── App 切回前景時主動檢查更新（解決 iOS PWA 長時間背景後不更新的問題）──
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'visible' && _swReg) {
+        _swReg.update().catch(function() {});
+      }
     });
   }
 
@@ -9122,6 +9187,12 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 })();
 </script>
+
+<!-- SW 更新提示 Toast -->
+<div id="sw-update-toast">
+  <span>✨ 有新版本可用</span>
+  <button id="sw-update-btn" onclick="swApplyUpdate()">立即更新</button>
+</div>
 
 </body>
 </html>

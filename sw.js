@@ -47,6 +47,13 @@ const PRECACHE_URLS = [
   './img/mille_feuille_maison.jpg',
 ];
 
+// ── Message：接收主頁面指令（例如強制更新）──
+self.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 // ── Install：預先快取所有指定資源 ──
 self.addEventListener('install', function(event) {
   event.waitUntil(
