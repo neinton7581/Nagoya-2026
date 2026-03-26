@@ -817,6 +817,12 @@
     backdrop-filter: blur(8px);
     z-index: 50;
     pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+  /* 展開行程卡時隱藏 footer，釋放閱讀空間 */
+  body.day-section-active.day-card-open footer {
+    transform: translateY(110%);
+    opacity: 0;
   }
   footer p {
     font-family: 'Josefin Sans', sans-serif;
@@ -1669,6 +1675,7 @@
     overflow: hidden;
     position: fixed;
     width: 100%;
+    left: 0;
   }
 
   /* ── LISTS modal ── */
@@ -6395,8 +6402,8 @@ body {
               </div>
           </div>
           <div class="voucher-item-wrap">
-            <input type="checkbox" id="vi-0330-2" class="voucher-item-input">
-            <label class="voucher-item-label" for="vi-0330-2">六本木之丘展望台</label>
+            <input type="checkbox" id="vi-0330-4" class="voucher-item-input">
+            <label class="voucher-item-label" for="vi-0330-4">六本木之丘展望台</label>
             <div class="voucher-item-body">預約平台：KKday<br>
               預約時間：18:00<br>
               <img src="img/03_30_view.png" alt="六本木展望台入場憑證" style="width:100%; max-width:100%; height:auto; margin-top:0.5rem; border-radius:6px;">
@@ -8144,7 +8151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       } else {
         document.body.classList.remove('day-section-active');
-
+        document.body.classList.remove('day-card-open');
       }
 
       // scroll 到 section 開頭
@@ -8218,6 +8225,13 @@ document.addEventListener('DOMContentLoaded', function() {
   window.addEventListener('resize', function() {
     setNavHeight();
     calcDayMinHeight();
+  });
+
+  // 展開行程卡時隱藏 footer，關閉（切換 tab）時恢復
+  document.querySelectorAll('.day-toggle-input').forEach(function(input) {
+    input.addEventListener('change', function() {
+      document.body.classList.toggle('day-card-open', this.checked);
+    });
   });
 
   // 每次開啟都從封面開始，不還原上次位置
@@ -8460,6 +8474,18 @@ document.addEventListener('keydown', function (e) {
         .catch(function(err) {
           console.warn('[SW] Registration failed:', err);
         });
+    });
+  }
+
+  // ── iOS PWA 鍵盤彈出時，將 input/textarea 捲動至可視範圍 ──
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function() {
+      var el = document.activeElement;
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+        setTimeout(function() {
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      }
     });
   }
 </script>
@@ -8902,6 +8928,9 @@ document.addEventListener('DOMContentLoaded', function() {
   var db   = firebase.firestore();
   var auth = firebase.auth();
   var SYNC = db.collection('sync');
+
+  // ── 啟用離線持久化（iOS PWA 離線時仍可讀取快取資料）──
+  db.enablePersistence({ synchronizeTabs: false }).catch(function() {});
 
   // ── 狀態 ──
   var _cache = { cl: null, memo: null, ledger: null, gifts: null, rate: null, wishlist: null };
