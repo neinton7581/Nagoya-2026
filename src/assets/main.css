@@ -241,9 +241,9 @@
     display: none;
   }
   .section-title {
-    font-family: 'Chiron GoRound TC', sans-serif;
+    font-family: 'Yusei Magic', sans-serif;
     font-size: clamp(1.6rem, 4vw, 2.4rem);
-    font-weight: 600;
+    font-weight: 400;
     color: #5a8f5e;
   }
   .section-range {
