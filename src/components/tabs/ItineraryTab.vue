@@ -12,7 +12,7 @@ const days = ref([
   {
     id: 'day2', num: 'Day 2', title: 'TBD', date: '8/23 日',
     tags: [],
-    gradient: 'linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%)',
+    gradient: 'linear-gradient(135deg, #5a8f5e 0%, #7ab47e 100%)',
     items: []
   },
   {
@@ -24,7 +24,7 @@ const days = ref([
   {
     id: 'day4', num: 'Day 4', title: 'TBD', date: '8/25 二',
     tags: [],
-    gradient: 'linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)',
+    gradient: 'linear-gradient(135deg, #8b6355 0%, #a87c6d 100%)',
     items: []
   },
   {

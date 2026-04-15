@@ -134,7 +134,7 @@ onMounted(() => { window.openReceiptOverlay = openOverlay })
         <div style="font-size:2rem;">⚠️</div>
         <div class="receipt-loading-txt">辨識失敗</div>
         <div class="receipt-loading-sub" style="max-width:280px;text-align:center;word-break:break-all;">{{ errorMsg }}</div>
-        <button @click="closeOverlay" style="margin-top:1rem;padding:0.6rem 1.5rem;background:#4a7a9b;color:#fff;border:none;border-radius:8px;cursor:pointer;">關閉</button>
+        <button @click="closeOverlay" style="margin-top:1rem;padding:0.6rem 1.5rem;background:#3a6b3e;color:#fff;border:none;border-radius:8px;cursor:pointer;">關閉</button>
       </div>
 
       <!-- Confirmed items -->

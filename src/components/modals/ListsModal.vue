@@ -1,12 +1,13 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 
-const props = defineProps({ open: Boolean })
+const props = defineProps({ open: Boolean, initialTab: { type: String, default: 'memo' } })
 const emit = defineEmits(['close'])
 
 // ── Lists Tab ──
 const activeListTab = ref('memo')
 function switchListsTab(name) { activeListTab.value = name }
+watch(() => props.open, (val) => { if (val) activeListTab.value = props.initialTab })
 
 // ── Util ──
 function escHtml(s) {

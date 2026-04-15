@@ -2,7 +2,6 @@
 import { ref, provide, onMounted, nextTick } from 'vue'
 import HeroSection from './components/HeroSection.vue'
 import BottomNav from './components/BottomNav.vue'
-import FabMenu from './components/FabMenu.vue'
 import PhotoLightbox from './components/PhotoLightbox.vue'
 import SwUpdateToast from './components/SwUpdateToast.vue'
 import OverviewTab from './components/tabs/OverviewTab.vue'
@@ -117,9 +116,7 @@ onMounted(() => {
   </div>
 
   <BottomNav />
-  <FabMenu />
-
-  <ListsModal       :open="openModalId === 'listsModal'"    @close="closeModal" />
+  <ListsModal       :open="['listsModal','memoModal','wishlistModal'].includes(openModalId)" :initial-tab="openModalId === 'wishlistModal' ? 'wishlist' : openModalId === 'memoModal' ? 'memo' : 'checklist'" @close="closeModal" />
   <InfoModal        :open="openModalId === 'infoModal'"     @close="closeModal" />
   <WalletModal      :open="openModalId === 'walletModal'"   @close="closeModal" />
   <StatsModal       :open="openModalId === 'statsModal'"    @close="closeModal" />

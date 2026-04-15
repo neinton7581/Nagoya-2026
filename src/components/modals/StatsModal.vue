@@ -19,8 +19,8 @@ function renderStats() {
   const rate = getRate()
   const total = data.reduce((s, i) => s + itemToTwd(i, rate), 0)
 
-  const catColors = ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f','#edc948','#b07aa1']
-  const payColors = ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f']
+  const catColors = ['#4a7c3f','#f28e2b','#e15759','#7ab47e','#59a14f','#edc948','#8b6355']
+  const payColors = ['#4a7c3f','#f28e2b','#e15759','#7ab47e','#59a14f']
 
   const catMap = {}
   data.forEach(i => { catMap[i.cat] = (catMap[i.cat] || 0) + itemToTwd(i, rate) })

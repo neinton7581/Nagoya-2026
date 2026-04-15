@@ -31,8 +31,9 @@ const days = [
           <div class="ov-flight-city">台灣 · 桃園</div>
         </div>
         <div class="ov-flight-middle">
-          <div class="ov-flight-arc"></div>
-          <i class="fa-solid fa-plane ov-flight-plane-icon"></i>
+          <div class="ov-plane-pill">
+            <i class="fa-solid fa-plane"></i>
+          </div>
         </div>
         <div class="ov-flight-airport right">
           <div class="ov-flight-code">NGO</div>
@@ -63,29 +64,29 @@ const days = [
     <!-- Quick links -->
     <div class="ov-day-section-title">快速連結</div>
     <div class="ov-quick-grid">
-      <button class="ov-quick-btn" @click="showTab('tab-itinerary')">
-        <i class="fa-solid fa-calendar-days"></i>
-        <span>行程</span>
-      </button>
       <button class="ov-quick-btn" @click="showTab('tab-transport')">
         <i class="fa-solid fa-ticket"></i>
-        <span>憑證</span>
+        <span>預約憑證</span>
+      </button>
+      <button class="ov-quick-btn" @click="openModal('memoModal')">
+        <i class="fa-solid fa-note-sticky"></i>
+        <span>備忘錄</span>
       </button>
       <button class="ov-quick-btn" @click="showTab('tab-dining')">
         <i class="fa-solid fa-gift"></i>
-        <span>伴手禮</span>
-      </button>
-      <button class="ov-quick-btn accent" @click="openModal('walletModal')">
-        <i class="fa-solid fa-wallet"></i>
-        <span>Wallet</span>
-      </button>
-      <button class="ov-quick-btn" @click="openModal('listsModal')">
-        <i class="fa-solid fa-list-check"></i>
-        <span>Lists</span>
+        <span>伴手禮推薦</span>
       </button>
       <button class="ov-quick-btn" @click="openModal('giftsModal')">
         <i class="fa-solid fa-bag-shopping"></i>
-        <span>Gifts</span>
+        <span>送禮清單</span>
+      </button>
+      <button class="ov-quick-btn" @click="openModal('wishlistModal')">
+        <i class="fa-solid fa-star"></i>
+        <span>願望清單</span>
+      </button>
+      <button class="ov-quick-btn" @click="openModal('walletModal')">
+        <i class="fa-solid fa-wallet"></i>
+        <span>記帳</span>
       </button>
     </div>
   </div>
