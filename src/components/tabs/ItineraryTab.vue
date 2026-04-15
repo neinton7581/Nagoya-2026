@@ -1,7 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, inject, watch } from 'vue'
 import DayImageCard from './DayImageCard.vue'
 import DayDetailView from './DayDetailView.vue'
+
+const activeItineraryDay = inject('activeItineraryDay')
 
 const days = ref([
   {
@@ -47,6 +49,16 @@ const days = ref([
 ])
 
 const selectedDay = ref(null)
+
+// 從概覽或 OverviewTab 直接跳到指定天
+watch(activeItineraryDay, (dayId) => {
+  if (dayId) {
+    const day = days.value.find(d => d.id === dayId)
+    selectedDay.value = day || null
+  } else {
+    selectedDay.value = null
+  }
+}, { immediate: true })
 
 function selectDay(day) {
   selectedDay.value = day

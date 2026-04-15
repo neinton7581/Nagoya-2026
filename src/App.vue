@@ -17,6 +17,7 @@ import ReceiptOverlay from './components/modals/ReceiptOverlay.vue'
 
 // ── Tab 狀態 ──
 const activeTab = ref('tab-overview')
+const activeItineraryDay = ref(null)   // null = 顯示行程總覽, 'day1'~'day5' = 直接進入當天
 const DAY_TABS = ['tab-itinerary']
 
 function setNavHeight() {
@@ -27,6 +28,7 @@ function setNavHeight() {
 }
 
 function showTab(tabId) {
+  activeItineraryDay.value = null  // 切換 tab 時重置至總覽
   activeTab.value = tabId
   if (DAY_TABS.includes(tabId)) {
     document.body.classList.add('day-section-active')
@@ -36,6 +38,17 @@ function showTab(tabId) {
     document.body.classList.remove('day-card-open')
   }
   nextTick(() => window.scrollTo({ top: 0, behavior: 'instant' }))
+}
+
+// 從概覽直接跳到指定天的行程詳情
+function showDay(dayId) {
+  activeItineraryDay.value = dayId
+  activeTab.value = 'tab-itinerary'
+  document.body.classList.add('day-section-active')
+  nextTick(() => {
+    setNavHeight()
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  })
 }
 
 // ── Modal 狀態 ──
@@ -63,7 +76,9 @@ function closeLightbox() { lightboxSrc.value = '' }
 
 // ── Provide 給子組件 ──
 provide('showTab', showTab)
+provide('showDay', showDay)
 provide('activeTab', activeTab)
+provide('activeItineraryDay', activeItineraryDay)
 provide('openModal', openModal)
 provide('closeModal', closeModal)
 provide('openModalId', openModalId)

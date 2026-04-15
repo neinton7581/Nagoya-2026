@@ -15,13 +15,11 @@ defineEmits(['back'])
       </button>
     </div>
 
-    <!-- 天數標題卡 -->
-    <div class="dd-hero" :style="day.image ? { backgroundImage: `url(${day.image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : { background: day.gradient }">
-      <div class="dd-hero-overlay">
-        <div class="dd-hero-num">{{ day.num }}</div>
-        <div class="dd-hero-title">{{ day.title }}</div>
-        <div class="dd-hero-date">{{ day.date }}</div>
-      </div>
+    <!-- 天數標題 -->
+    <div class="dd-title-row">
+      <span class="dd-hero-num">{{ day.num }}</span>
+      <span class="dd-hero-date">{{ day.date }}</span>
+      <h2 class="dd-hero-title">{{ day.title }}</h2>
     </div>
 
     <!-- 景點地圖 -->
@@ -69,40 +67,25 @@ defineEmits(['back'])
 }
 .dd-back-btn:active { opacity: .6; }
 
-/* 英雄圖卡 */
-.dd-hero {
-  position: relative;
-  height: 140px;
-  border-radius: 16px;
-  overflow: hidden;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.2);
-}
-.dd-hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 55%);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 14px 16px;
-  text-shadow: 0 1px 6px rgba(0,0,0,.5);
+/* 天數標題列 */
+.dd-title-row {
+  margin-bottom: 18px;
 }
 .dd-hero-num {
   font-size: .72rem;
-  color: rgba(255,255,255,.8);
+  color: #888;
   letter-spacing: .08em;
   text-transform: uppercase;
-}
-.dd-hero-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #fff;
+  margin-right: 8px;
 }
 .dd-hero-date {
-  font-size: .78rem;
-  color: rgba(255,255,255,.75);
-  margin-top: 2px;
+  font-size: .72rem;
+  color: #aaa;
+}
+.dd-hero-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 4px 0 0;
 }
 
 /* 區塊標籤 */

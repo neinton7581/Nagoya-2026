@@ -1,15 +1,16 @@
 <script setup>
 import { inject } from 'vue'
 const showTab = inject('showTab')
+const showDay = inject('showDay')
 const openModal = inject('openModal')
 const flightMapUrl = `url('${import.meta.env.BASE_URL}flight-map.png')`
 
 const days = [
-  { n: 1, label: '8/22' },
-  { n: 2, label: '8/23' },
-  { n: 3, label: '8/24' },
-  { n: 4, label: '8/25' },
-  { n: 5, label: '8/26' },
+  { n: 1, id: 'day1', label: '8/22' },
+  { n: 2, id: 'day2', label: '8/23' },
+  { n: 3, id: 'day3', label: '8/24' },
+  { n: 4, id: 'day4', label: '8/25' },
+  { n: 5, id: 'day5', label: '8/26' },
 ]
 </script>
 
@@ -45,7 +46,7 @@ const days = [
         v-for="d in days"
         :key="d.n"
         class="ov-day-btn"
-        @click="showTab('tab-itinerary')"
+        @click="showDay(d.id)"
       >
         <span class="ov-day-label">Day</span>
         <span class="ov-day-circle">{{ d.n }}</span>
