@@ -1,6 +1,5 @@
 <script setup>
 import { ref, provide, onMounted, nextTick } from 'vue'
-import HeroSection from './components/HeroSection.vue'
 import BottomNav from './components/BottomNav.vue'
 import PhotoLightbox from './components/PhotoLightbox.vue'
 import SwUpdateToast from './components/SwUpdateToast.vue'
@@ -80,8 +79,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <HeroSection />
-
   <section class="flight-banner">
     <div class="flight-card">
       <span class="flight-label">Departure</span>
