@@ -69,7 +69,7 @@
   }
 
   .hero-title {
-    font-family: 'Shippori Mincho', serif;
+    font-family: 'Chiron GoRound TC', sans-serif;
     font-size: clamp(3.5rem, 10vw, 8rem);
     font-weight: 700;
     line-height: 0.9;
@@ -241,7 +241,7 @@
     display: none;
   }
   .section-title {
-    font-family: 'Shippori Mincho', serif;
+    font-family: 'Chiron GoRound TC', sans-serif;
     font-size: clamp(1.6rem, 4vw, 2.4rem);
     font-weight: 600;
     color: #5a8f5e;
@@ -286,7 +286,7 @@
     white-space: nowrap;
   }
   .day-title {
-    font-family: 'Shippori Mincho', serif;
+    font-family: 'Chiron GoRound TC', sans-serif;
     font-size: 1rem;
     color: #5a8f5e;
   }
@@ -373,7 +373,7 @@
     margin-bottom: 0.2rem;
   }
   .t-title {
-    font-family: 'Shippori Mincho', serif;
+    font-family: 'Chiron GoRound TC', sans-serif;
     font-size: 0.95rem;
     color: #5a8f5e;
     margin-bottom: 0.3rem;
@@ -585,7 +585,7 @@
     margin-bottom: 0.5rem;
   }
   .accom-name {
-    font-family: 'Shippori Mincho', serif;
+    font-family: 'Chiron GoRound TC', sans-serif;
     font-size: 1.05rem;
     color: #5a8f5e;
     margin-bottom: 0.3rem;
@@ -2497,7 +2497,7 @@
   }
   .gift-record:last-child { border-bottom: none; }
   .gift-person {
-    font-family: 'Shippori Mincho', serif;
+    font-family: 'Chiron GoRound TC', sans-serif;
     font-size: 0.9rem;
     color: #5a8f5e;
   }
@@ -2600,7 +2600,7 @@
 
   /* ── Gift item name / location labels ── */
   .gift-item-title {
-    font-family: 'Shippori Mincho', serif;
+    font-family: 'Chiron GoRound TC', sans-serif;
     font-size: 1rem;
     color: #788871;
     font-weight: bold;
@@ -2949,7 +2949,7 @@ body {
   opacity: 0.75;
 }
 .hero-card-title {
-  font-family: 'Shippori Mincho', serif;
+  font-family: 'Chiron GoRound TC', sans-serif;
   font-size: clamp(3rem, 12vw, 5rem);
   font-weight: 700;
   line-height: 1;
@@ -3310,7 +3310,7 @@ body {
   margin-bottom: 0.2rem;
 }
 .day-photo-title {
-  font-family: 'Shippori Mincho', serif;
+  font-family: 'Chiron GoRound TC', sans-serif;
   font-size: 1.3rem;
   font-weight: 700;
   color: #fff;
