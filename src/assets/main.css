@@ -3122,7 +3122,7 @@ body {
 /* Flight route card */
 .ov-flight-card {
   background-size: 120%;
-  background-position: center 95%;
+  background-position: center 110%;
   background-repeat: no-repeat;
   border-radius: 22px;
   box-shadow: var(--app-shadow);
