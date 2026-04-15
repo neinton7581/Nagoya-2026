@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  base: '/Nagoya-2026/',
   plugins: [
     vue(),
     VitePWA({
@@ -13,8 +14,8 @@ export default defineConfig({
         name: '名古屋旅遊行程表',
         short_name: 'Nagoya Travel',
         description: '名古屋旅遊行程表 PWA',
-        start_url: '/',
-        scope: '/',
+        start_url: '/Nagoya-2026/',
+        scope: '/Nagoya-2026/',
         display: 'standalone',
         display_override: ['standalone', 'minimal-ui'],
         orientation: 'portrait',
