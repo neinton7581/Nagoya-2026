@@ -4,51 +4,92 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 專案概述
 
-這是一個單頁 PWA（Progressive Web App），為 2026 年春季東京 13 天旅遊行程表。整個 app 只有一個 `index.html`，沒有建置工具、框架或套件管理器。
+名古屋旅遊 PWA，使用 **Vue 3 + Vite + vite-plugin-pwa** 架構。
 
-## 開發與部署
+## 技術堆疊
 
-- **無建置步驟**：直接編輯 `index.html`，用瀏覽器開啟即可預覽。
-- **部署**：`git push` 到 `main` branch，GitHub Pages 自動部署。
-- **PWA 快取**：每次新增圖片或 PDF 到 `img/` 或 `pdf/`，必須同步將路徑加入 `sw.js` 的 `PRECACHE_URLS`，並將 `CACHE_NAME` 版本號遞增（例如 `tokyo-2026-v5` → `v6`）。
+| 工具 | 版本 | 用途 |
+|------|------|------|
+| pnpm | 10.x | 套件管理 |
+| Vite | 6.x | 建置工具 |
+| Vue 3 | 3.5.x | UI 框架（Composition API + `<script setup>`） |
+| vite-plugin-pwa | 1.x | PWA / Service Worker 自動生成 |
+| Firebase | 12.x | Auth + Firestore 即時同步 |
 
-## 架構
+## 開發指令
 
-### 單一檔案結構（index.html）
+```bash
+pnpm dev        # 啟動開發伺服器（http://localhost:5173）
+pnpm build      # 建置生產版本（輸出到 dist/）
+pnpm preview    # 預覽生產建置
+```
 
-整個 app 分為幾個主要區塊，**全部寫在 index.html 內**：
+## 部署
 
-1. **CSS**（`<style>`）：所有樣式，包含 RWD（`@media max-width: 480px`）與深色/淺色模式。
-2. **HTML 結構**：Tab 導覽（概覽、Day 1–4、Day 5–6、Day 7–8、Day 9–13）+ 工具 Modal（Lists、Wallet、Gifts、Settings）。
-3. **JavaScript**（`<script>`）：所有功能，無外部 JS 框架。
+- `git push` 到 `main` branch，GitHub Pages 自動從 `dist/` 部署。
+- 需在 GitHub repo Settings → Pages 將 Source 設為 GitHub Actions 或指定 `dist/` 分支。
 
-### Tab 切換機制
+## 專案結構
 
-主 Tab 用 `<input type="radio" name="main-tab">` 的純 CSS 方式控制顯示（`:checked` selector），不依賴 JS。Day 內的手風琴也是同樣的 `<input type="radio/checkbox">` pattern。
+```
+├── public/              # 靜態資源（直接複製到 dist/）
+│   ├── icon.png
+│   ├── img/             # 行程圖片
+│   └── pdf/             # 預約憑證 PDF
+├── src/
+│   ├── main.js          # 應用程式進入點
+│   ├── App.vue          # 根組件（Tab 導覽、Modal 控制）
+│   ├── components/      # 各功能組件
+│   │   ├── days/        # 行程天數組件（DayCard.vue 等）
+│   │   └── modals/      # 工具 Modal（Wallet.vue, Checklist.vue 等）
+│   ├── composables/     # 可複用狀態邏輯
+│   │   ├── useStorage.js    # localStorage / Firestore 統一介面
+│   │   ├── useChecklist.js  # 行前清單狀態
+│   │   ├── useLedger.js     # 記帳狀態
+│   │   └── useFirebase.js   # Firebase Auth + Firestore 同步
+│   ├── data/            # 靜態資料（JSON）
+│   │   ├── itinerary.json   # 行程資料
+│   │   ├── vouchers.json    # 預約憑證列表
+│   │   └── gifts.json       # 伴手禮推薦列表
+│   └── assets/          # 需經 Vite 處理的資源（CSS、字型等）
+├── _legacy/             # 原始單檔版本（僅供參考，不參與建置）
+│   ├── index.html
+│   ├── sw.js
+│   └── manifest.json
+├── vite.config.js       # Vite + vite-plugin-pwa 設定
+├── package.json
+└── .npmrc               # pnpm build scripts 許可清單
+```
 
-### 資料持久化（Firebase + localStorage）
+## PWA 注意事項
 
-Firebase Firestore 用於兩位使用者之間的即時同步。架構：
+- **無需手動維護 sw.js**：`vite-plugin-pwa` 在 `pnpm build` 時自動生成 Service Worker。
+- **新增靜態資源**：將圖片放入 `public/img/`、PDF 放入 `public/pdf/`，`workbox.globPatterns` 自動納入快取，不需手動更新版本號。
+- Service Worker 採用 `registerType: 'prompt'`，有新版本時顯示提示讓使用者手動更新。
 
-- **未登入**：純 localStorage（`tokyo_cl`、`tokyo_memo`、`tokyo_ledger`、`tokyo_gifts`、`tokyo_wishlist`）
-- **已登入**：`window.getXxxData` / `window.saveXxxData` 被 Firebase 區塊 override，讀取優先用 `_cache`，寫入同步到 Firestore `sync/{docKey}` collection。
-- **`_cache`**：`{ cl, memo, ledger, gifts, wishlist, rate }`，初始全為 `null`。
-- **`_migrateKey`**：登入後只在 Firebase 無資料 **且 localStorage 有實際資料時** 才遷移（避免寫入空陣列覆蓋預設值）。
+## 資料持久化架構
 
-### 行前清單（Checklist）初始化
+### 狀態快取結構（`_cache`）
 
-`initClData()` 用 `localStorage.getItem('tokyo_cl_inited')` flag 判斷是否已初始化過，避免 Firebase 返回空陣列時預設值不顯示。
+```js
+{ cl: null, memo: null, ledger: null, gifts: null, wishlist: null, rate: null }
+```
 
-### Voucher（預約憑證）
+### 同步邏輯
 
-位於 `#tab-voucher` 區塊，每天用 `<input type="checkbox" class="voucher-day-input">` 展開。圖片路徑直接用 `img/` 相對路徑。
+- **未登入**：純 `localStorage`（key: `nagoya_cl`, `nagoya_memo`, `nagoya_ledger`, `nagoya_gifts`, `nagoya_wishlist`）
+- **已登入**：Firestore `sync/{docKey}` collection，讀取優先用 `_cache`，寫入同步到 Firestore
+- **`_migrateKey`**：登入後，只在 Firestore 無資料 **且 localStorage 有實際資料時** 才遷移（防止空陣列覆蓋 Firestore）
 
-### 禮品推薦（Gifts Modal）
+### 行前清單初始化
 
-縮圖 grid + modal 詳細頁，`openGift(id)` / `closeGift()` 控制。
+`initClData()` 使用 `localStorage.getItem('nagoya_cl_inited')` flag 判斷是否已初始化，避免 Firebase 返回空陣列時預設值不顯示。
 
-## 常見操作注意事項
+## git 慣例
 
-- **新增圖片**：放入 `img/`，同步加入 `sw.js` 的 `PRECACHE_URLS`，並升版 `CACHE_NAME`。
-- **新增 PDF**：放入 `pdf/`，同步加入 `sw.js` 的 `PRECACHE_URLS`，並升版 `CACHE_NAME`。
-- **git 慣例**：commit message 用中文，push 到 `main`。
+- commit message 用**中文**
+- push 到 `main`
+- 不需手動升 cache 版本號（vite-plugin-pwa 自動處理）
+
+# currentDate
+Today's date is 2026-04-14.
