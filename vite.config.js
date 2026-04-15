@@ -45,6 +45,7 @@ export default defineConfig({
         ],
       },
       workbox: {
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024, // 8MB 上限
         // 自動預快取所有 build 輸出，以及 public/ 下的靜態資源
         globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,webp,svg,pdf}'],
         // 圖片與 PDF 採 CacheFirst，JS/CSS 採 StaleWhileRevalidate
