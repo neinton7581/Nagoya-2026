@@ -241,9 +241,9 @@
     display: none;
   }
   .section-title {
-    font-family: 'Potta One', sans-serif;
+    font-family: 'Chiron GoRound TC', sans-serif;
     font-size: clamp(1.6rem, 4vw, 2.4rem);
-    font-weight: 400;
+    font-weight: 600;
     color: #5a8f5e;
   }
   .section-range {
@@ -3310,9 +3310,9 @@ body {
   margin-bottom: 0.2rem;
 }
 .day-photo-title {
-  font-family: 'Chiron GoRound TC', sans-serif;
+  font-family: 'Potta One', sans-serif;
   font-size: 1.3rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #fff;
   line-height: 1.25;
 }
