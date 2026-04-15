@@ -3199,7 +3199,7 @@ body {
 .ov-day-btn.active { background: var(--app-dark); }
 .ov-day-label {
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 0.58rem;
+  font-size: 0.65rem;
   letter-spacing: 0.05em;
   color: var(--app-text-muted);
   text-transform: uppercase;
@@ -3210,13 +3210,13 @@ body {
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 0.88rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--app-text);
 }
 .ov-day-btn.active .ov-day-circle { color: #fff; }
 .ov-day-date-label {
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   color: var(--app-text-muted);
   font-family: 'Josefin Sans', sans-serif;
 }
@@ -3237,7 +3237,7 @@ body {
   padding: 1rem 0.5rem 0.9rem;
   border: none;
   border-radius: 18px;
-  background: var(--app-surface);
+  background: #fefff3;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.12s;
@@ -3249,7 +3249,7 @@ body {
 }
 .ov-quick-btn i {
   font-size: 1.3rem;
-  color: var(--app-dark);
+  color: #89b08c;
 }
 .ov-quick-btn.accent i { color: var(--app-dark); }
 .ov-quick-btn span {
