@@ -6,31 +6,31 @@ const days = ref([
   {
     id: 'day1', num: 'Day 1', title: '抵達名古屋', date: '8/22 六',
     tags: [{ label: '交通', type: 'transport' }],
-    gradient: 'linear-gradient(135deg, #f97316 0%, #fbbf24 100%)',
+    gradient: 'linear-gradient(135deg, #000000 0%, #ffffff 100%)',
     items: []
   },
   {
     id: 'day2', num: 'Day 2', title: 'TBD', date: '8/23 日',
     tags: [],
-    gradient: 'linear-gradient(135deg, #5a8f5e 0%, #7ab47e 100%)',
+    gradient: 'linear-gradient(135deg, #000000 0%, #ffffff 100%)',
     items: []
   },
   {
     id: 'day3', num: 'Day 3', title: 'TBD', date: '8/24 一',
     tags: [],
-    gradient: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
+    gradient: 'linear-gradient(135deg, #000000 0%, #ffffff 100%)',
     items: []
   },
   {
     id: 'day4', num: 'Day 4', title: 'TBD', date: '8/25 二',
     tags: [],
-    gradient: 'linear-gradient(135deg, #8b6355 0%, #a87c6d 100%)',
+    gradient: 'linear-gradient(135deg, #000000 0%, #ffffff 100%)',
     items: []
   },
   {
     id: 'day5', num: 'Day 5', title: '回台灣', date: '8/26 三',
     tags: [{ label: '交通', type: 'transport' }],
-    gradient: 'linear-gradient(135deg, #f43f5e 0%, #fb923c 100%)',
+    gradient: 'linear-gradient(135deg, #000000 0%, #ffffff 100%)',
     items: []
   },
 ])
