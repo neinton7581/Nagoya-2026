@@ -813,7 +813,7 @@
   @media (max-width: 480px) {
 
     /* ── Hero ── */
-    .hero { min-height: 480px; }
+    .hero { min-height: 0; }
     .hero-date { font-size: 0.52rem; letter-spacing: 0.15em; }
     .hero-title { font-size: clamp(2.6rem, 14vw, 4rem); }
     .hero-title .en { font-size: clamp(0.6rem, 3.5vw, 0.9rem); }
@@ -3121,7 +3121,9 @@ body {
 
 /* Flight route card */
 .ov-flight-card {
-  background: url('/flight-map.png') center/cover no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 22px;
   box-shadow: var(--app-shadow);
   margin-bottom: 1rem;

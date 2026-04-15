@@ -2,6 +2,7 @@
 import { inject } from 'vue'
 const showTab = inject('showTab')
 const openModal = inject('openModal')
+const flightMapUrl = `url('${import.meta.env.BASE_URL}flight-map.png')`
 
 const days = [
   { n: 1, label: '8/22' },
@@ -24,7 +25,7 @@ const days = [
     </div>
 
     <!-- Flight route card -->
-    <div class="ov-flight-card">
+    <div class="ov-flight-card" :style="{ backgroundImage: flightMapUrl }">
       <div class="ov-flight-route">
         <div class="ov-flight-airport">
           <div class="ov-flight-code">TPE</div>
