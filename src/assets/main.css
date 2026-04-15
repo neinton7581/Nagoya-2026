@@ -3122,7 +3122,7 @@ body {
 /* Flight route card */
 .ov-flight-card {
   background-size: 120%;
-  background-position: center;
+  background-position: center 35%;
   background-repeat: no-repeat;
   border-radius: 22px;
   box-shadow: var(--app-shadow);
@@ -3137,12 +3137,21 @@ body {
 }
 .ov-flight-route {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
+  grid-template-columns: 1fr 1fr;
   width: 100%;
+  gap: 0.5rem;
 }
-.ov-flight-airport { display: flex; flex-direction: column; gap: 0.2rem; }
-.ov-flight-airport.right { text-align: right; }
+.ov-flight-airport {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 14px;
+  padding: 0.55rem 0.75rem;
+}
 .ov-flight-code {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 2.6rem;
@@ -3150,40 +3159,11 @@ body {
   letter-spacing: 0.04em;
   color: var(--app-text);
   line-height: 1;
-  text-shadow:
-    -2px -2px 0 #fff,
-     2px -2px 0 #fff,
-    -2px  2px 0 #fff,
-     2px  2px 0 #fff,
-     0 0 10px rgba(255,255,255,0.9);
 }
 .ov-flight-city {
   font-size: 0.68rem;
   color: var(--app-text-muted);
   letter-spacing: 0.03em;
-  text-shadow:
-    -1px -1px 0 #fff,
-     1px -1px 0 #fff,
-    -1px  1px 0 #fff,
-     1px  1px 0 #fff,
-     0 0 6px rgba(255,255,255,0.9);
-}
-.ov-flight-middle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 0.75rem;
-}
-.ov-plane-pill {
-  background: var(--app-text);
-  border-radius: 50px;
-  width: 52px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--app-card);
-  font-size: 0.95rem;
 }
 
 /* Day selector row */

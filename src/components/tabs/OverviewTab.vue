@@ -31,12 +31,7 @@ const days = [
           <div class="ov-flight-code">TWN</div>
           <div class="ov-flight-city">臺灣</div>
         </div>
-        <div class="ov-flight-middle">
-          <div class="ov-plane-pill">
-            <i class="fa-solid fa-plane"></i>
-          </div>
-        </div>
-        <div class="ov-flight-airport right">
+        <div class="ov-flight-airport">
           <div class="ov-flight-code">NGO</div>
           <div class="ov-flight-city">名古屋 · 中部</div>
         </div>
