@@ -28,8 +28,8 @@ const days = [
     <div class="ov-flight-card" :style="{ backgroundImage: flightMapUrl }">
       <div class="ov-flight-route">
         <div class="ov-flight-airport">
-          <div class="ov-flight-code">TPE</div>
-          <div class="ov-flight-city">台灣 · 桃園</div>
+          <div class="ov-flight-code">TWN</div>
+          <div class="ov-flight-city">臺灣</div>
         </div>
         <div class="ov-flight-middle">
           <div class="ov-plane-pill">
@@ -40,10 +40,6 @@ const days = [
           <div class="ov-flight-code">NGO</div>
           <div class="ov-flight-city">名古屋 · 中部</div>
         </div>
-      </div>
-      <div class="ov-flight-dates">
-        <div class="ov-flight-date-chip">✈ 出發 8/22 六</div>
-        <div class="ov-flight-date-chip">↩ 返回 8/26 三</div>
       </div>
     </div>
 
