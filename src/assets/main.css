@@ -3137,7 +3137,7 @@ body {
 }
 .ov-flight-route {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   width: 100%;
   gap: 0.5rem;
 }
