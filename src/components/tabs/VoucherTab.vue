@@ -22,7 +22,7 @@ function toggleItem(id) {
 <template>
   <div class="section-header">
     <span class="section-num">06</span>
-    <h2 class="section-title">住宿 & 預約憑證</h2>
+    <h2 class="section-title">預約憑證</h2>
     <span class="section-range">名古屋旅遊 2026</span>
   </div>
 
